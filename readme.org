@@ -8,7 +8,7 @@ not want to tinker with it, keep off your hands.
 
 * Overview and usage
 - =org-roam-consult-rg-search= :: Search your roam-directory with
-  [[https://github.com/BurntSushi/ripgrep][ripgrep]]
+  grep or [[https://github.com/BurntSushi/ripgrep][ripgrep]]
 - =org-roam-consult-backlinks= :: List backlinks to =org-roam-node-at-point= (e.g. currently open note) and sift through them with consult's completing-read and its live preview
 - =org-roam-consult-file-find= :: Search your org-roam files with consult's completing-read and its live preview
 
