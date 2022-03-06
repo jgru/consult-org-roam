@@ -1,0 +1,34 @@
+* =org-roam-consult=
+This is a small collection of functions to operate [[https://github.com/org-roam/org-roam][org-roam]] with the
+help of [[https://github.com/minad/consult][consult]] and its live preview feature.
+
+Please note that this is totally WIP and developed for my personal
+use. Both the functionality and the interface will change. If you do
+not want to tinker with it, keep off your hands.
+
+* Overview and usage
+- =org-roam-consult-rg-search= :: Search your roam-directory with
+  [[https://github.com/BurntSushi/ripgrep][ripgrep]]
+- =org-roam-consult-backlinks= :: List backlinks to =org-roam-node-at-point= (e.g. currently open note) and sift through them with consult's completing-read and its live preview
+- =org-roam-consult-file-find= :: Search your org-roam files with consult's completing-read and its live preview
+
+* Installation
+
+#+begin_src elisp
+(use-package org-roam-consult
+   :straight (:host github :repo "jgru/org-roam-consult")
+   :init
+   (require 'org-roam-consult)
+   :custom
+   (org-roam-consult-grep-func #'consult-ripgrep)
+   :bind
+   ("C-c n e" . org-roam-consult-file-find)
+   ("C-c n b" . org-roam-consult-backlinks)
+   ("C-c n r" . org-roam-consult-search))
+#+end_src
+
+* Dependencies
+=org-roam-desktop= is built on top of [[https://github.com/org-roam/org-roam][org-roam]] and [[https://github.com/minad/consult][consult]], it relies on its functionality.
+
+Furthermore, ensure that you have [[https://github.com/BurntSushi/ripgrep][ripgrep]] installed on your system, if
+you set =org-roam-consult-grep-func= to =#'consult-ripgrep=.
