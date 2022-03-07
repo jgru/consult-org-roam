@@ -1,4 +1,4 @@
-* =org-roam-consult=
+* =org-roam-consult= -- An Unofficial Extension
 This is a small collection of functions to operate [[https://github.com/org-roam/org-roam][org-roam]] with the
 help of [[https://github.com/minad/consult][consult]] and its live preview feature.
 
