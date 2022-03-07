@@ -28,12 +28,12 @@ supplied. Can take a PROMPT argument."
                   (org-roam-list-files)))
          (prompt (if prompt prompt
                  "Select File: ")))
-     (consult--read
-      files
-      :prompt prompt
-      :sort t
-      :require-match t
-      :state (consult--file-preview))))
+    (consult--read
+     files
+     :prompt prompt
+     :sort t
+     :require-match t
+     :state (consult--file-preview))))
 
 (defun org-roam-consult--ids-to-files (ids)
   "Take a bunch of IDS of org-roam-nodes and convert those into file paths."
@@ -74,25 +74,26 @@ If REQUIRE-MATCH, the minibuffer prompt will require a match.
 PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"Node: \""
   (let* ((nodes (org-roam-node-read--completions filter-fn sort-fn))
          (prompt (or prompt "Node: "))
-         (node
-          (consult--read
-              nodes
-              :prompt prompt
-              :initial initial-input
-              :predicate filter-fn
-              :sort sort-fn
-              :require-match t
-              :category 'org-roam-node
-              :annotate (lambda (title)
-                              (funcall org-roam-node-annotation-function
-                                       (get-text-property 0 'node title)))
-              :history org-roam-node-history
-              :state (org-roam-consult--node-preview)
-              :preview-key 'any)))
-    (or (cdr (assoc node nodes))
+         (node (consult--read
+                nodes
+                :prompt prompt
+                :initial initial-input
+                :predicate filter-fn
+                :sort sort-fn
+                :require-match nil
+                :category 'org-roam-node
+                ;; :history org-roam-node-history
+                :annotate (lambda (title)
+                                (funcall org-roam-node-annotation-function
+                                         (get-text-property 0 'node title)))
+                :state (org-roam-consult--node-preview)
+                :preview-key 'any
+                :lookup #'consult--lookup-cdr)))
+    (or (progn node)
         (org-roam-node-create :title node))))
 
-;; Minimally adapted from https://github.com/minad/consult/blob/8547e336142e74449b59a6b018e3c96a2b205fd2/consult.el#L1103
+;; Minimally adapted version of
+;; https://github.com/minad/consult/blob/8547e336142e74449b59a6b018e3c96a2b205fd2/consult.el#L1103
 (defun org-roam-consult--temporary-nodes ()
   "Return a function to open nodes temporarily."
   (let* ((new-buffers)
@@ -105,8 +106,7 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
                 (enable-dir-local-variables nil)
                 (enable-local-variables (and enable-local-variables :safe))
                 (non-essential t)
-                (name
-                 (org-roam-node-file (get-text-property 0 'node node))))
+                (name (org-roam-node-file node)))
             (or
              ;; get-file-buffer is only a small optimization here. It
              ;; may not find the actual buffer, for directories it
@@ -136,8 +136,9 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
                    buf)))))
         (mapc #'consult--kill-clean-buffer new-buffers)))))
 
-;; Taken from https://github.com/minad/consult/blob/8547e336142e74449b59a6b018e3c96a2b205fd2/consult.el#L3265
-;; and adapted to use `org-roam-consult--temporary-nodes'
+;; Adapted version of
+;; https://github.com/minad/consult/blob/8547e336142e74449b59a6b018e3c96a2b205fd2/consult.el#L3265
+;; Made it to use `org-roam-consult--temporary-nodes'
 (defun org-roam-consult--node-preview ()
   "Create preview function for nodes."
   (let ((open (org-roam-consult--temporary-nodes))
