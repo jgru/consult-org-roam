@@ -2,15 +2,28 @@
 This is a small collection of functions to operate [[https://github.com/org-roam/org-roam][org-roam]] with the
 help of [[https://github.com/minad/consult][consult]] and its live preview feature.
 
-Please note that this is totally WIP and developed for my personal
-use. Both the functionality and the interface will change. If you do
-not want to tinker with it, keep off your hands.
+Please note that this is WIP and developed for my personal use. Both
+the functionality and the interface will change. If you do not want to
+tinker with it, keep off your hands.
 
 * Overview and usage
-- =org-roam-consult-rg-search= :: Search your roam-directory with
-  grep or [[https://github.com/BurntSushi/ripgrep][ripgrep]]
-- =org-roam-consult-backlinks= :: List backlinks to =org-roam-node-at-point= (e.g. currently open note) and sift through them with consult's completing-read and its live preview
-- =org-roam-consult-file-find= :: Search your org-roam files with consult's completing-read and its live preview
+=org-roam-consult.el= provides several functions to connect org-roam
+to consult's completing read interface. On the one hand, it provides
+the following standalone functions which enhance =org-roam='s
+capabilities:
+
+- =org-roam-consult-rg-search= :: Search your roam-directory with grep
+  or [[https://github.com/BurntSushi/ripgrep][ripgrep]]
+- =org-roam-consult-backlinks= :: List backlinks to
+  =org-roam-node-at-point= (e.g. currently open note) and sift through
+  them with consult's completing-read and its live preview
+- =org-roam-consult-file-find= :: Search your org-roam files with
+  consult's completing-read and its live preview
+
+On the other hand it overrides =org-roam-node-read= which is used by
+=org-roam-node-find=, =org-roam-node-insert= and =org-roam-refile=. By
+doing so, it resorts to consult for performing completion in this
+functions.
 
 * Installation
 
@@ -28,7 +41,7 @@ not want to tinker with it, keep off your hands.
 #+end_src
 
 * Dependencies
-=org-roam-desktop= is built on top of [[https://github.com/org-roam/org-roam][org-roam]] and [[https://github.com/minad/consult][consult]], it relies on its functionality.
+=org-roam-consult= is built on top of [[https://github.com/org-roam/org-roam][org-roam]] and [[https://github.com/minad/consult][consult]], it relies on its functionality.
 
 Furthermore, ensure that you have [[https://github.com/BurntSushi/ripgrep][ripgrep]] installed on your system, if
 you set =org-roam-consult-grep-func= to =#'consult-ripgrep=.
