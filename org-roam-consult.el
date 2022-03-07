@@ -55,6 +55,22 @@ supplied. Can take a PROMPT argument."
         (find-file (org-roam-consult--select-file "Backlinks: " (org-roam-consult--ids-to-files ids)))
       (user-error "No backlinks found"))))
 
+(defun org-roam-consult-forward-links ()
+  "Select a forward link contained in the current buffer."
+  (interactive )
+  (let ((id-links nil))
+    (org-element-map (org-element-parse-buffer) 'link
+  (lambda (link)
+    (when (string= (org-element-property :type link) "id")
+      ;; Use add-to-list to avoid duplicates
+      (add-to-list 'id-links
+                   ;; wrap each link in a list to be conformant
+                   ;; with the format expected by org-roam-consult--ids-to-files
+                   (list (org-element-property :path link))))))
+    (if id-links
+        (find-file (org-roam-consult--select-file "Links: " (org-roam-consult--ids-to-files id-links)))
+      (user-error "No forward links found"))))
+
 (defun org-roam-consult-file-find ()
   "Find org-roam node with preview."
   (interactive "")
