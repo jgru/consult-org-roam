@@ -104,9 +104,11 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
                                          (get-text-property 0 'node title)))
                 :state (org-roam-consult--node-preview)
                 :preview-key 'any
-                :lookup #'consult--lookup-cdr)))
-    (or (progn node)
-        (org-roam-node-create :title node))))
+                ;; uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
+                :lookup (lambda (_ candidates input)(alist-get input candidates input nil #'equal))
+                )))
+    (if (org-roam-node-p node) (progn node)
+        (progn (org-roam-node-create :title node)))))
 
 ;; Minimally adapted version of
 ;; https://github.com/minad/consult/blob/8547e336142e74449b59a6b018e3c96a2b205fd2/consult.el#L1103
@@ -117,39 +119,42 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
          (dir default-directory))
     (lambda (&optional node)
       (if node
-          (let ((default-directory dir)
-                (inhibit-message t)
-                (enable-dir-local-variables nil)
-                (enable-local-variables (and enable-local-variables :safe))
-                (non-essential t)
-                (name (org-roam-node-file node)))
-            (or
-             ;; get-file-buffer is only a small optimization here. It
-             ;; may not find the actual buffer, for directories it
-             ;; returns nil instead of returning the Dired buffer.
-             (get-file-buffer name)
-             ;; file-attributes may throw permission denied error
-             (when-let* ((attrs (ignore-errors (file-attributes name)))
-                         (size (file-attribute-size attrs)))
-               (if (> size consult-preview-max-size)
-                      (prog1 nil
-                        (message "File `%s' (%s) is too large for preview"
-                                 name (file-size-human-readable size)))
-                 (cl-letf* (((default-value 'find-file-hook)
-                             (seq-remove (lambda (x)
-                                           (memq x consult-preview-excluded-hooks))
-                                         (default-value 'find-file-hook)))
-                            (buf (find-file-noselect
-                                  name 'nowarn
-                                  (> size consult-preview-raw-size))))
-                   ;; Only add new buffer if not already in the list
-                   (unless (or (memq buf new-buffers) (memq buf old-buffers))
-                     (push buf new-buffers)
-                     ;; Only keep a few buffers alive
-                     (while (> (length new-buffers) consult-preview-max-count)
-                       (consult--kill-clean-buffer (car (last new-buffers)))
-                       (setq new-buffers (nbutlast new-buffers))))
-                   buf)))))
+          ;; Preview only, when it is an org-roam node
+          (when (org-roam-node-p node)
+            (let ((default-directory dir)
+                  (inhibit-message t)
+                  (enable-dir-local-variables nil)
+                  (enable-local-variables (and enable-local-variables :safe))
+                  (non-essential t)
+                  (name (org-roam-node-file node)))
+              (or
+               ;; get-file-buffer is only a small optimization here. It
+               ;; may not find the actual buffer, for directories it
+               ;; returns nil instead of returning the Dired buffer.
+               (get-file-buffer name)
+               ;; file-attributes may throw permission denied error
+               (when-let* ((attrs (ignore-errors (file-attributes name)))
+                           (size (file-attribute-size attrs)))
+                 (if (> size consult-preview-max-size)
+                     (prog1 nil
+                       (message "File `%s' (%s) is too large for preview"
+                                name (file-size-human-readable size)))
+                   (cl-letf* (((default-value 'find-file-hook)
+                               (seq-remove (lambda (x)
+                                             (memq x consult-preview-excluded-hooks))
+                                           (default-value 'find-file-hook)))
+                              (buf (find-file-noselect
+                                    name 'nowarn
+                                    (> size consult-preview-raw-size))))
+                     ;; Only add new buffer if not already in the list
+                     (unless (or (memq buf new-buffers) (memq buf old-buffers))
+                       (push buf new-buffers)
+                       ;; Only keep a few buffers alive
+                       (while (> (length new-buffers) consult-preview-max-count)
+                         (consult--kill-clean-buffer (car (last new-buffers)))
+                         (setq new-buffers (nbutlast new-buffers))))
+                     buf))))))
+        ;; clean buffers, even if it is not an org-roam-node
         (mapc #'consult--kill-clean-buffer new-buffers)))))
 
 ;; Adapted version of
