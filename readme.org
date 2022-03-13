@@ -22,8 +22,10 @@ capabilities:
 
 On the other hand it overrides =org-roam-node-read= which is used by
 =org-roam-node-find=, =org-roam-node-insert= and =org-roam-refile=. By
-doing so, it resorts to consult for performing completion in this
-functions.
+doing so, all functions utilizing completing-read resort to =consult=
+for performing completion. Furthermore, the same is done for
+=org-roam-ref-read= so that =consult= is used for completing
+references as well.
 
 * Installation
 
