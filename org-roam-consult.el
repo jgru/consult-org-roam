@@ -171,5 +171,31 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
             (funcall open))
         (funcall preview (and cand (funcall open cand)) nil)))))
 
+;; Completing-read interface for references using consult
+;; Override `org-roam-ref-read' so that each an every completing function regarding refs resorts to consult
+;; https://github.com/org-roam/org-roam/blob/cc3689f30f69260d89eb59959f6196bbe8f9e1ea/org-roam-node.el#L946
+(defun org-roam-ref-read (&optional initial-input filter-fn)
+  "Read an ref and return its `org-roam-node' with the help of consult.
+INITIAL-INPUT is the initial prompt value.
+FILTER-FN is a function to filter out nodes: it takes an `org-roam-node',
+and when nil is returned the node will be filtered out.
+filtered out."
+  (let* ((refs (org-roam-ref-read--completions))
+         (refs (cl-remove-if-not (lambda (n)
+                                   (if filter-fn (funcall filter-fn (cdr n)) t)) refs))
+         (ref (consult--read
+                refs
+                :prompt "Refs: "
+                :initial initial-input
+                :predicate filter-fn
+                :require-match t
+                :category 'org-roam-ref
+                :history 'org-roam-ref-history
+                :annotate (lambda (r) (funcall org-roam-ref-annotation-function r))
+                :state (org-roam-consult--node-preview)
+                :preview-key 'any
+                :lookup #'consult--lookup-cdr)))
+    (progn ref)))
+
 (provide 'org-roam-consult)
 ;;; org-roam-consult.el ends here
