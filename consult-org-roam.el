@@ -1,4 +1,4 @@
-;;; org-roam-consult.el --- Consult integration for org-roam  -*- lexical-binding: t; -*-
+;;; consult-org-roam.el --- Consult integration for org-roam  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; Copyright (C) 2022 jgru
@@ -8,19 +8,19 @@
 (require 'org-roam)
 (require 'consult)
 
-(defcustom org-roam-consult-grep-func #'consult-ripgrep
+(defcustom consult-org-roam-grep-func #'consult-ripgrep
   "Function for searching files."
    :type 'function)
 
-(defun org-roam-consult-search (&optional initial)
+(defun consult-org-roam-search (&optional initial)
   "Search org-roam directory using consult-ripgrep with live-preview.
 With an option for INITIAL input when called non-interactively."
   (interactive)
   (if initial
-      (funcall org-roam-consult-grep-func org-roam-directory (format "%s" initial))
-    (funcall org-roam-consult-grep-func org-roam-directory)))
+      (funcall consult-org-roam-grep-func org-roam-directory (format "%s" initial))
+    (funcall consult-org-roam-grep-func org-roam-directory)))
 
-(defun org-roam-consult--select-file (&optional prompt list)
+(defun consult-org-roam--select-file (&optional prompt list)
   "Wrapper around `consult--read' to select an org-roam file.
 Offers candidates withing `org-roam-directory', or from LIST when
 supplied. Can take a PROMPT argument."
@@ -35,13 +35,13 @@ supplied. Can take a PROMPT argument."
      :require-match t
      :state (consult--file-preview))))
 
-(defun org-roam-consult--ids-to-files (ids)
+(defun consult-org-roam--ids-to-files (ids)
   "Take a bunch of IDS of org-roam-nodes and convert those into file paths."
   (mapcar #'(lambda (id)
               (org-roam-node-file (org-roam-node-from-id (car id))))
          ids))
 
-(defun org-roam-consult-backlinks ()
+(defun consult-org-roam-backlinks ()
   "Select from list of all notes that link to the current note."
   (interactive)
   (let* ((node (org-roam-node-at-point))
@@ -52,10 +52,10 @@ supplied. Can take a PROMPT argument."
                      :and (= type "id")]
             (org-roam-node-id (org-roam-node-at-point)))))
     (if ids
-        (find-file (org-roam-consult--select-file "Backlinks: " (org-roam-consult--ids-to-files ids)))
+        (find-file (consult-org-roam--select-file "Backlinks: " (consult-org-roam--ids-to-files ids)))
       (user-error "No backlinks found"))))
 
-(defun org-roam-consult-forward-links ()
+(defun consult-org-roam-forward-links ()
   "Select a forward link contained in the current buffer."
   (interactive )
   (let ((id-links nil))
@@ -65,16 +65,16 @@ supplied. Can take a PROMPT argument."
       ;; Use add-to-list to avoid duplicates
       (add-to-list 'id-links
                    ;; wrap each link in a list to be conformant
-                   ;; with the format expected by org-roam-consult--ids-to-files
+                   ;; with the format expected by consult-org-roam--ids-to-files
                    (list (org-element-property :path link))))))
     (if id-links
-        (find-file (org-roam-consult--select-file "Links: " (org-roam-consult--ids-to-files id-links)))
+        (find-file (consult-org-roam--select-file "Links: " (consult-org-roam--ids-to-files id-links)))
       (user-error "No forward links found"))))
 
-(defun org-roam-consult-file-find ()
+(defun consult-org-roam-file-find ()
   "Find org-roam node with preview."
   (interactive "")
-  (find-file (org-roam-consult--select-file "Node: ")))
+  (find-file (consult-org-roam--select-file "Node: ")))
 
 ;; Completing-read interface using consult
 ;; Override `org-roam-node-read' so that each an every completing function resorts to consult
@@ -98,11 +98,11 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
                 :sort sort-fn
                 :require-match nil
                 :category 'org-roam-node
-                ;; :history org-roam-node-history
+                ;;:history 'org-roam-node-history
                 :annotate (lambda (title)
                                 (funcall org-roam-node-annotation-function
                                          (get-text-property 0 'node title)))
-                :state (org-roam-consult--node-preview)
+                :state (consult-org-roam--node-preview)
                 :preview-key 'any
                 ;; uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
                 :lookup (lambda (_ candidates input)(alist-get input candidates input nil #'equal))
@@ -112,7 +112,7 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
 
 ;; Minimally adapted version of
 ;; https://github.com/minad/consult/blob/8547e336142e74449b59a6b018e3c96a2b205fd2/consult.el#L1103
-(defun org-roam-consult--temporary-nodes ()
+(defun consult-org-roam--temporary-nodes ()
   "Return a function to open nodes temporarily."
   (let* ((new-buffers)
          (old-buffers (buffer-list))
@@ -159,10 +159,10 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
 
 ;; Adapted version of
 ;; https://github.com/minad/consult/blob/8547e336142e74449b59a6b018e3c96a2b205fd2/consult.el#L3265
-;; Made it to use `org-roam-consult--temporary-nodes'
-(defun org-roam-consult--node-preview ()
+;; Made it to use `consult-org-roam--temporary-nodes'
+(defun consult-org-roam--node-preview ()
   "Create preview function for nodes."
-  (let ((open (org-roam-consult--temporary-nodes))
+  (let ((open (consult-org-roam--temporary-nodes))
         (preview (consult--buffer-preview)))
     (lambda (cand restore)
       (if restore
@@ -192,10 +192,10 @@ filtered out."
                 :category 'org-roam-ref
                 :history 'org-roam-ref-history
                 :annotate (lambda (r) (funcall org-roam-ref-annotation-function r))
-                :state (org-roam-consult--node-preview)
+                :state (consult-org-roam--node-preview)
                 :preview-key 'any
                 :lookup #'consult--lookup-cdr)))
     (progn ref)))
 
-(provide 'org-roam-consult)
-;;; org-roam-consult.el ends here
+(provide 'consult-org-roam)
+;;; consult-org-roam.el ends here
