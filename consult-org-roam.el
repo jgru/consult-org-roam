@@ -8,9 +8,16 @@
 (require 'org-roam)
 (require 'consult)
 
+(defgroup consult-org-roam nil
+  "Consult interface for org-roam."
+  :group 'org
+  :group 'convenience
+  :prefix "consult-org-roam-")
+
 (defcustom consult-org-roam-grep-func #'consult-ripgrep
   "Function for searching files."
-   :type 'function)
+   :type 'function
+   :group 'consult-org-roam)
 
 (defun consult-org-roam-search (&optional initial)
   "Search org-roam directory using consult-ripgrep with live-preview.
