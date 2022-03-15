@@ -88,7 +88,8 @@ supplied. Can take a PROMPT argument."
 ;; Completing-read interface using consult. Override
 ;; `org-roam-node-read' so that each an every completing function
 ;; resorts to consult
-(defun org-roam-node-read (&optional initial-input filter-fn sort-fn require-match prompt)
+(defun org-roam-node-read (&optional initial-input filter-fn sort-fn
+                                     require-match prompt)
   "Read and return an `org-roam-node' with the help of consult.
 INITIAL-INPUT is the initial minibuffer prompt value.
 FILTER-FN is a function to filter out nodes: it takes an `org-roam-node',
@@ -96,7 +97,8 @@ and when nil is returned the node will be filtered out.
 SORT-FN is a function to sort nodes. See `org-roam-node-read-sort-by-file-mtime'
 for an example sort function.
 If REQUIRE-MATCH, the minibuffer prompt will require a match.
-PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"Node: \""
+PROMPT is a string to show at the beginning of the mini-buffer,
+defaulting to \"Node: \""
   (let* ((nodes (org-roam-node-read--completions filter-fn sort-fn))
          (prompt (or prompt "Node: "))
          (node (consult--read
