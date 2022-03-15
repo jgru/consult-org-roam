@@ -76,9 +76,9 @@ supplied. Can take a PROMPT argument."
   (interactive "")
   (find-file (consult-org-roam--select-file "Node: ")))
 
-;; Completing-read interface using consult
-;; Override `org-roam-node-read' so that each an every completing function resorts to consult
-;; https://github.com/org-roam/org-roam/blob/f50d6e7376b3ba603fb4df1d95204ca5f3cc3ca8/org-roam-node.el#L510
+;; Completing-read interface using consult. Override
+;; `org-roam-node-read' so that each an every completing function
+;; resorts to consult
 (defun org-roam-node-read (&optional initial-input filter-fn sort-fn require-match prompt)
   "Read and return an `org-roam-node' with the help of consult.
 INITIAL-INPUT is the initial minibuffer prompt value.
@@ -110,8 +110,6 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
     (if (org-roam-node-p node) (progn node)
         (progn (org-roam-node-create :title node)))))
 
-;; Minimally adapted version of
-;; https://github.com/minad/consult/blob/8547e336142e74449b59a6b018e3c96a2b205fd2/consult.el#L1103
 (defun consult-org-roam--temporary-nodes ()
   "Return a function to open nodes temporarily."
   (let* ((new-buffers)
@@ -157,9 +155,6 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
         ;; clean buffers, even if it is not an org-roam-node
         (mapc #'consult--kill-clean-buffer new-buffers)))))
 
-;; Adapted version of
-;; https://github.com/minad/consult/blob/8547e336142e74449b59a6b018e3c96a2b205fd2/consult.el#L3265
-;; Made it to use `consult-org-roam--temporary-nodes'
 (defun consult-org-roam--node-preview ()
   "Create preview function for nodes."
   (let ((open (consult-org-roam--temporary-nodes))
@@ -171,9 +166,9 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
             (funcall open))
         (funcall preview (and cand (funcall open cand)) nil)))))
 
-;; Completing-read interface for references using consult
-;; Override `org-roam-ref-read' so that each an every completing function regarding refs resorts to consult
-;; https://github.com/org-roam/org-roam/blob/cc3689f30f69260d89eb59959f6196bbe8f9e1ea/org-roam-node.el#L946
+;; Completing-read interface for references using consult. Override
+;; `org-roam-ref-read' so that each an every completing function
+;; regarding refs resorts to consult
 (defun org-roam-ref-read (&optional initial-input filter-fn)
   "Read an ref and return its `org-roam-node' with the help of consult.
 INITIAL-INPUT is the initial prompt value.
