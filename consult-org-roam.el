@@ -98,7 +98,7 @@ PROMPT is a string to show at the beginning of the mini-buffer, defaulting to \"
                 :initial initial-input
                 :predicate filter-fn
                 :sort sort-fn
-                :require-match nil
+                :require-match require-match
                 :category 'org-roam-node
                 ;;:history 'org-roam-node-history
                 :annotate (lambda (title)
