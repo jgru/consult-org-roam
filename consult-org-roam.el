@@ -50,7 +50,9 @@ supplied. Can take a PROMPT argument."
                      :from links
                      :where (= dest $s1)
                      :and (= type "id")]
-            (org-roam-node-id (org-roam-node-at-point)))))
+            (if node
+                (org-roam-node-id (org-roam-node-at-point))
+              (user-error "Buffer does not contain org-roam-nodes.")))))
     (if ids
         (find-file (consult-org-roam--select-file "Backlinks: " (consult-org-roam--ids-to-files ids)))
       (user-error "No backlinks found"))))
