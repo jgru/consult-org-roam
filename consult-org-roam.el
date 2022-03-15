@@ -1,7 +1,21 @@
 ;;; consult-org-roam.el --- Consult integration for org-roam  -*- lexical-binding: t; -*-
 
-;;; Commentary:
 ;; Copyright (C) 2022 jgru
+
+;; Author: jgru <https://github.com/jgru>
+;; Created: March 3rd, 2022
+;; License: GPL-3.0-or-later
+;; Version: 0.1
+;; Homepage: https://github.com/jgru/consult-org-roam
+;; Package-Requires: ((emacs "24.4"))
+
+;;; Commentary:
+
+;; This is a set of functions to use org-roam with consult.
+;; This packages replaces org-roam's own completing read functions
+;; with equivalent versions utilizing consult's internal API. By doing so,
+;; one gains all advantages of consult which enhances Emacs' own
+;; completing-read funcionality.
 
 ;;; Code:
 
