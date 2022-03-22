@@ -41,6 +41,7 @@ With an option for INITIAL input when called non-interactively."
       (funcall consult-org-roam-grep-func org-roam-directory (format "%s" initial))
     (funcall consult-org-roam-grep-func org-roam-directory)))
 
+;;;###autoload
 (defun consult-org-roam--select-file (&optional prompt list)
   "Wrapper around `consult--read' to select an org-roam file.
 Offers candidates withing `org-roam-directory', or from LIST when
@@ -56,6 +57,7 @@ supplied. Can take a PROMPT argument."
      :require-match t
      :state (consult--file-preview))))
 
+;;;###autoload
 (defun consult-org-roam--ids-to-files (ids)
   "Take a bunch of IDS of org-roam-nodes and convert those into file paths."
   (mapcar #'(lambda (id)
@@ -102,6 +104,7 @@ supplied. Can take a PROMPT argument."
 ;; Completing-read interface using consult. Override
 ;; `org-roam-node-read' so that each an every completing function
 ;; resorts to consult
+;;;###autoload
 (defun org-roam-node-read (&optional initial-input filter-fn sort-fn
                                      require-match prompt)
   "Read and return an `org-roam-node' with the help of consult.
@@ -135,6 +138,7 @@ defaulting to \"Node: \""
     (if (org-roam-node-p node) (progn node)
         (progn (org-roam-node-create :title node)))))
 
+;;;###autoload
 (defun consult-org-roam--temporary-nodes ()
   "Return a function to open nodes temporarily."
   (let* ((new-buffers)
@@ -180,6 +184,7 @@ defaulting to \"Node: \""
         ;; clean buffers, even if it is not an org-roam-node
         (mapc #'consult--kill-clean-buffer new-buffers)))))
 
+;;;###autoload
 (defun consult-org-roam--node-preview ()
   "Create preview function for nodes."
   (let ((open (consult-org-roam--temporary-nodes))
@@ -194,6 +199,7 @@ defaulting to \"Node: \""
 ;; Completing-read interface for references using consult. Override
 ;; `org-roam-ref-read' so that each an every completing function
 ;; regarding refs resorts to consult
+;;;###autoload
 (defun org-roam-ref-read (&optional initial-input filter-fn)
   "Read an ref and return its `org-roam-node' with the help of consult.
 INITIAL-INPUT is the initial prompt value.
