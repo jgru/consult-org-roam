@@ -33,8 +33,14 @@
    :type 'function
    :group 'consult-org-roam)
 
+(defcustom consult-org-roam-no-preview-functions
+  '()
+  "List of functions for which previews should not be rendered."
+  :group 'consult-org-roam
+  :type '(repeat function))
+
 (defun consult-org-roam-search (&optional initial)
-  "Search org-roam directory using consult-ripgrep with live-preview.
+  "Search org-roam directory using `consult-ripgrep' with live-preview.
 With an option for INITIAL input when called non-interactively."
   (interactive)
   (if initial
@@ -55,6 +61,7 @@ supplied. Can take a PROMPT argument."
      :prompt prompt
      :sort t
      :require-match t
+     :preview-key (consult-org-roam--preview-functions)
      :state (consult--file-preview))))
 
 ;;;###autoload
@@ -75,7 +82,7 @@ supplied. Can take a PROMPT argument."
                      :and (= type "id")]
             (if node
                 (org-roam-node-id (org-roam-node-at-point))
-              (user-error "Buffer does not contain org-roam-nodes.")))))
+              (user-error "Buffer does not contain org-roam-nodes")))))
     (if ids
         (find-file (consult-org-roam--select-file "Backlinks: " (consult-org-roam--ids-to-files ids)))
       (user-error "No backlinks found"))))
@@ -131,7 +138,7 @@ defaulting to \"Node: \""
                                 (funcall org-roam-node-annotation-function
                                          (get-text-property 0 'node title)))
                 :state (consult-org-roam--node-preview)
-                :preview-key 'any
+                :preview-key (consult-org-roam--preview-functions)
                 ;; uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
                 :lookup (lambda (_ candidates input)(alist-get input candidates input nil #'equal))
                 )))
@@ -201,7 +208,7 @@ defaulting to \"Node: \""
 ;; regarding refs resorts to consult
 ;;;###autoload
 (defun org-roam-ref-read (&optional initial-input filter-fn)
-  "Read an ref and return its `org-roam-node' with the help of consult.
+  "Read a ref and return its `org-roam-node' with the help of consult.
 INITIAL-INPUT is the initial prompt value.
 FILTER-FN is a function to filter out nodes: it takes an `org-roam-node',
 and when nil is returned the node will be filtered out.
@@ -219,9 +226,15 @@ filtered out."
                 :history 'org-roam-ref-history
                 :annotate (lambda (r) (funcall org-roam-ref-annotation-function r))
                 :state (consult-org-roam--node-preview)
-                :preview-key 'any
+                :preview-key (consult-org-roam--preview-functions)
                 :lookup #'consult--lookup-cdr)))
     (progn ref)))
+
+;;;###autoload
+(defun consult-org-roam--preview-functions ()
+  "Check wether the calling function should be previewd or not."
+  (when (not (member this-command consult-org-roam-no-preview-functions))
+    consult-preview-key))
 
 (provide 'consult-org-roam)
 ;;; consult-org-roam.el ends here
