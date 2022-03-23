@@ -19,8 +19,16 @@
 
 ;;; Code:
 
+;; ============================================================================
+;;;; Dependencies
+;; ============================================================================
+
 (require 'org-roam)
 (require 'consult)
+
+;; ============================================================================
+;;;; Customize definitions
+;; ============================================================================
 
 (defgroup consult-org-roam nil
   "Consult interface for org-roam."
@@ -38,6 +46,10 @@
   "List of functions for which previews should not be rendered."
   :group 'consult-org-roam
   :type '(repeat function))
+
+;; ============================================================================
+;;;; Functions
+;; ============================================================================
 
 (defun consult-org-roam-search (&optional initial)
   "Search org-roam directory using `consult-ripgrep' with live-preview.
