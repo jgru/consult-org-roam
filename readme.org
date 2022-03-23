@@ -27,6 +27,10 @@ for performing completion. Furthermore, the same is done for
 =org-roam-ref-read= so that =consult= is used for completing
 references as well.
 
+Eventually, you might want to suppress previewing for certain
+functions. This can be done by adding the above mentioned functions to
+`consult-org-roam-no-preview-functions`.
+
 * Installation
 
 #+begin_src elisp
@@ -36,6 +40,8 @@ references as well.
    (require 'consult-org-roam)
    :custom
    (consult-org-roam-grep-func #'consult-ripgrep)
+   ;; Eventually suppress previewing for certain functions
+   ;;(consult-org-roam-no-preview-functions '(consult-org-roam-forward-links consult-org-roam-backlinks))
    :bind
    ("C-c n e" . consult-org-roam-file-find)
    ("C-c n b" . consult-org-roam-backlinks)
