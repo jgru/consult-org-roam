@@ -7,7 +7,7 @@
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
 ;; Homepage: https://github.com/jgru/consult-org-roam
-;; Package-Requires: ((emacs "24.4"))
+;; Package-Requires: ((emacs "27.1") (org-roam "2.2.0") (consult "0.16"))
 
 ;;; Commentary:
 
