@@ -59,7 +59,6 @@ With an option for INITIAL input when called non-interactively."
       (funcall consult-org-roam-grep-func org-roam-directory (format "%s" initial))
     (funcall consult-org-roam-grep-func org-roam-directory)))
 
-;;;###autoload
 (defun consult-org-roam--select-file (&optional prompt list)
   "Wrapper around `consult--read' to select an org-roam file.
 Offers candidates withing `org-roam-directory', or from LIST when
@@ -76,7 +75,6 @@ supplied. Can take a PROMPT argument."
      :preview-key (consult-org-roam--preview-functions)
      :state (consult--file-preview))))
 
-;;;###autoload
 (defun consult-org-roam--ids-to-files (ids)
   "Take a bunch of IDS of org-roam-nodes and convert those into file paths."
   (mapcar #'(lambda (id)
@@ -152,12 +150,10 @@ defaulting to \"Node: \""
                 :state (consult-org-roam--node-preview)
                 :preview-key (consult-org-roam--preview-functions)
                 ;; uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
-                :lookup (lambda (_ candidates input)(alist-get input candidates input nil #'equal))
-                )))
+                :lookup (lambda (_ candidates input)(alist-get input candidates input nil #'equal)))))
     (if (org-roam-node-p node) (progn node)
         (progn (org-roam-node-create :title node)))))
 
-;;;###autoload
 (defun consult-org-roam--temporary-nodes ()
   "Return a function to open nodes temporarily."
   (let* ((new-buffers)
@@ -203,7 +199,6 @@ defaulting to \"Node: \""
         ;; clean buffers, even if it is not an org-roam-node
         (mapc #'consult--kill-clean-buffer new-buffers)))))
 
-;;;###autoload
 (defun consult-org-roam--node-preview ()
   "Create preview function for nodes."
   (let ((open (consult-org-roam--temporary-nodes))
@@ -242,7 +237,6 @@ filtered out."
                 :lookup #'consult--lookup-cdr)))
     (progn ref)))
 
-;;;###autoload
 (defun consult-org-roam--preview-functions ()
   "Check wether the calling function should be previewd or not."
   (when (not (member this-command consult-org-roam-no-preview-functions))
