@@ -77,7 +77,7 @@ supplied. Can take a PROMPT argument."
 
 (defun consult-org-roam--ids-to-files (ids)
   "Take a bunch of IDS of org-roam-nodes and convert those into file paths."
-  (mapcar #'(lambda (id)
+  (mapcar (lambda (id)
               (org-roam-node-file (org-roam-node-from-id (car id))))
          ids))
 
