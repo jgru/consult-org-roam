@@ -16,12 +16,13 @@ capabilities:
 - =consult-org-roam-file-find= :: Search your org-roam files with
   consult's completing-read and its live preview
 
-On the other hand it overrides =org-roam-node-read= which is used by
-=org-roam-node-find=, =org-roam-node-insert= and =org-roam-refile=. By
-doing so, all functions utilizing completing-read resort to =consult=
-for performing completion. Furthermore, the same is done for
-=org-roam-ref-read= so that =consult= is used for completing
-references as well.
+On the other hand, it provides a minormode called
+=consult-org-roam-mode=. When activated =org-roam-node-read= is
+overridden which is used by =org-roam-node-find=,
+=org-roam-node-insert= and =org-roam-refile=. By doing so, all
+functions utilizing completing-read resort to =consult= for performing
+completion. Furthermore, the same is done for =org-roam-ref-read= so
+that =consult= is used for completing references as well.
 
 Eventually, you might want to suppress previewing for certain
 functions. This can be done by adding the above mentioned functions to
@@ -34,6 +35,8 @@ functions. This can be done by adding the above mentioned functions to
    :straight (:host github :repo "jgru/consult-org-roam")
    :init
    (require 'consult-org-roam)
+   ;; Activate the minor-mode
+   (consult-org-roam-mode 1)
    :custom
    (consult-org-roam-grep-func #'consult-ripgrep)
    ;; Eventually suppress previewing for certain functions
