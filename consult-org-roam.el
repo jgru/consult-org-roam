@@ -1,10 +1,9 @@
 ;;; consult-org-roam.el --- Consult integration for org-roam  -*- lexical-binding: t; -*-
-
 ;; Copyright (C) 2022 jgru
 
 ;; Author: jgru <https://github.com/jgru>
 ;; Created: March 3rd, 2022
-;; License: GPL-3.0-or-later
+;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; Version: 0.1
 ;; Homepage: https://github.com/jgru/consult-org-roam
 ;; Package-Requires: ((emacs "27.1") (org-roam "2.2.0") (consult "0.16"))
