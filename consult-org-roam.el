@@ -121,7 +121,7 @@ supplied. Can take a PROMPT argument."
 ;; `org-roam-node-read' so that each an every completing function
 ;; resorts to consult
 ;;;###autoload
-(defun org-roam-node-read (&optional initial-input filter-fn sort-fn
+(defun consult-org-roam-node-read (&optional initial-input filter-fn sort-fn
                                      require-match prompt)
   "Read and return an `org-roam-node' with the help of consult.
 INITIAL-INPUT is the initial minibuffer prompt value.
@@ -213,7 +213,7 @@ defaulting to \"Node: \""
 ;; `org-roam-ref-read' so that each an every completing function
 ;; regarding refs resorts to consult
 ;;;###autoload
-(defun org-roam-ref-read (&optional initial-input filter-fn)
+(defun consult-org-roam-ref-read (&optional initial-input filter-fn)
   "Read a ref and return its `org-roam-node' with the help of consult.
 INITIAL-INPUT is the initial prompt value.
 FILTER-FN is a function to filter out nodes: it takes an `org-roam-node',
@@ -240,6 +240,30 @@ filtered out."
   "Check wether the calling function should be previewd or not."
   (when (not (member this-command consult-org-roam-no-preview-functions))
     consult-preview-key))
+
+(make-variable-buffer-local
+  (defvar consult-org-roam-mode nil
+    "Toggle consult-org-roam-mode to enable/disable consult integration with org-roam."))
+
+(add-to-list 'minor-mode-alist '(consult-org-roam " consult-org-roam"))
+
+(defun consult-org-roam-mode (&optional ARG)
+  (interactive (list 'toggle))
+  (setq consult-org-roam-mode
+        (if (eq ARG 'toggle)
+            (not consult-org-roam-mode)
+          (> ARG 0)))
+
+  ;; Take some action when enabled or disabled
+  (if consult-org-roam-mode
+      (progn
+        (advice-add #'org-roam-node-read :override #'consult-org-roam-node-read)
+        (advice-add #'org-roam-ref-read :override #'consult-org-roam-ref-read)
+        (message "Consult integration for org-roam enabled"))
+    (progn
+      (advice-remove #'org-roam-node-read #'consult-org-roam-node-read)
+      (advice-remove #'org-roam-ref-read #'consult-org-roam-ref-read)
+      (message "Consult integration for org-roam disabled"))))
 
 (provide 'consult-org-roam)
 ;;; consult-org-roam.el ends here
