@@ -248,6 +248,10 @@ filtered out."
 (add-to-list 'minor-mode-alist '(consult-org-roam " consult-org-roam"))
 
 (defun consult-org-roam-mode (&optional ARG)
+  "Toggle `consult-org-roam-mode' to integrate consult with org-roam.
+By enabling `consult-org-roam-mode' the functions `org-roam-node-read' and
+`org-roam-ref-read' are overriden by consults-org-roam's equivalents. Optional
+argument ARG indicates whether the mode should be enabled or disabled."
   (interactive (list 'toggle))
   (setq consult-org-roam-mode
         (if (eq ARG 'toggle)
