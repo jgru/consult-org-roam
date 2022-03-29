@@ -243,7 +243,7 @@ filtered out."
 
 (make-variable-buffer-local
   (defvar consult-org-roam-mode nil
-    "Toggle consult-org-roam-mode to enable/disable consult integration with org-roam."))
+    "Toggle consult-org-roam-mode to integrate consult in org-roam."))
 
 (add-to-list 'minor-mode-alist '(consult-org-roam " consult-org-roam"))
 
