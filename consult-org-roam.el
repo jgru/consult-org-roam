@@ -94,17 +94,16 @@ supplied. Can take a PROMPT argument."
 (defun consult-org-roam-forward-links ()
   "Select a forward link contained in the current buffer."
   (interactive)
-  (let ((id-links nil))
+  (let ((id-links '()))
     (org-element-map (org-element-parse-buffer) 'link
   (lambda (link)
     (when (string= (org-element-property :type link) "id")
       ;; Use add-to-list to avoid duplicates
-      (add-to-list 'id-links
-                   ;; wrap each link in a list to be conformant
-                   ;; with the format expected by consult-org-roam--ids-to-files
-                   (list (org-element-property :path link))))))
+      (push ;; wrap each link in a list to be conformant
+            ;; with the format expected by consult-org-roam--ids-to-files
+            (list (org-element-property :path link)) id-links))))
     (if id-links
-        (find-file (consult-org-roam--select-file "Links: " (consult-org-roam--ids-to-files id-links)))
+        (find-file (consult-org-roam--select-file "Links: " (consult-org-roam--ids-to-files (delete-dups id-links))))
       (user-error "No forward links found"))))
 
 ;;;###autoload
