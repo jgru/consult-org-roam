@@ -227,34 +227,21 @@ filtered out."
                 :lookup #'consult--lookup-cdr)))
     (progn ref)))
 
-(make-variable-buffer-local
-  (defvar consult-org-roam-mode nil
-    "Toggle consult-org-roam-mode to integrate consult in org-roam."))
-
-(add-to-list 'minor-mode-alist '(consult-org-roam " consult-org-roam"))
-
 ;;;###autoload
-(defun consult-org-roam-mode (&optional ARG)
+(define-minor-mode consult-org-roam-mode
   "Toggle `consult-org-roam-mode' to integrate consult with org-roam.
 By enabling `consult-org-roam-mode' the functions `org-roam-node-read' and
 `org-roam-ref-read' are overriden by consults-org-roam's equivalents. Optional
 argument ARG indicates whether the mode should be enabled or disabled."
-  (interactive (list 'toggle))
-  (setq consult-org-roam-mode
-        (if (eq ARG 'toggle)
-            (not consult-org-roam-mode)
-          (> ARG 0)))
-
-  ;; Take some action when enabled or disabled
+  :lighter " cor"
+  ;; Add or remove advice when enabled respectively disabled
   (if consult-org-roam-mode
       (progn
         (advice-add #'org-roam-node-read :override #'consult-org-roam-node-read)
-        (advice-add #'org-roam-ref-read :override #'consult-org-roam-ref-read)
-        (message "Consult integration for org-roam enabled"))
+        (advice-add #'org-roam-ref-read :override #'consult-org-roam-ref-read))
     (progn
       (advice-remove #'org-roam-node-read #'consult-org-roam-node-read)
-      (advice-remove #'org-roam-ref-read #'consult-org-roam-ref-read)
-      (message "Consult integration for org-roam disabled"))))
+      (advice-remove #'org-roam-ref-read #'consult-org-roam-ref-read))))
 
 (provide 'consult-org-roam)
 ;;; consult-org-roam.el ends here
