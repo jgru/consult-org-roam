@@ -222,7 +222,7 @@ filtered out."
                 :require-match t
                 :category 'org-roam-ref
                 :history 'org-roam-ref-history
-                :annotate (lambda (r) (funcall org-roam-ref-annotation-function r))
+                :annotate org-roam-ref-annotation-function
                 :state (consult-org-roam--node-preview)
                 :lookup #'consult--lookup-cdr)))
     (progn ref)))
