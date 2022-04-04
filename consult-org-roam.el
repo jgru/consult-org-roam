@@ -40,12 +40,6 @@
    :type 'function
    :group 'consult-org-roam)
 
-(defcustom consult-org-roam-no-preview-functions
-  '()
-  "List of functions for which previews should not be rendered."
-  :group 'consult-org-roam
-  :type '(repeat function))
-
 ;; ============================================================================
 ;;;; Functions
 ;; ============================================================================
@@ -71,7 +65,6 @@ supplied. Can take a PROMPT argument."
      :prompt prompt
      :sort t
      :require-match t
-     :preview-key (consult-org-roam--preview-functions)
      :state (consult--file-preview))))
 
 (defun consult-org-roam--ids-to-files (ids)
@@ -149,7 +142,6 @@ defaulting to \"Node: \""
                                 (funcall org-roam-node-annotation-function
                                          (get-text-property 0 'node title)))
                 :state (consult-org-roam--node-preview)
-                :preview-key (consult-org-roam--preview-functions)
                 ;; uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
                 :lookup (lambda (_ candidates input)(alist-get input candidates input nil #'equal)))))
     (if (org-roam-node-p node) (progn node)
@@ -233,14 +225,8 @@ filtered out."
                 :history 'org-roam-ref-history
                 :annotate (lambda (r) (funcall org-roam-ref-annotation-function r))
                 :state (consult-org-roam--node-preview)
-                :preview-key (consult-org-roam--preview-functions)
                 :lookup #'consult--lookup-cdr)))
     (progn ref)))
-
-(defun consult-org-roam--preview-functions ()
-  "Check wether the calling function should be previewd or not."
-  (when (not (member this-command consult-org-roam-no-preview-functions))
-    consult-preview-key))
 
 (make-variable-buffer-local
   (defvar consult-org-roam-mode nil

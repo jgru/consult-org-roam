@@ -25,8 +25,8 @@ completion. Furthermore, the same is done for =org-roam-ref-read= so
 that =consult= is used for completing references as well.
 
 Eventually, you might want to suppress previewing for certain
-functions. This can be done by adding the above mentioned functions to
-=consult-org-roam-no-preview-functions=.
+functions. This can be done by adding using
+=consult-customize=.
 
 * Installation
 
@@ -39,8 +39,11 @@ functions. This can be done by adding the above mentioned functions to
    (consult-org-roam-mode 1)
    :custom
    (consult-org-roam-grep-func #'consult-ripgrep)
+   :config
    ;; Eventually suppress previewing for certain functions
-   ;;(consult-org-roam-no-preview-functions '(consult-org-roam-forward-links consult-org-roam-backlinks))
+   (consult-customize
+    consult-org-roam-forward-links
+    :preview-key (kbd "M-."))
    :bind
    ("C-c n e" . consult-org-roam-file-find)
    ("C-c n b" . consult-org-roam-backlinks)
