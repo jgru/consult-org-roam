@@ -80,6 +80,7 @@ supplied. Can take a PROMPT argument."
               (org-roam-node-file (org-roam-node-from-id (car id))))
          ids))
 
+;;;###autoload
 (defun consult-org-roam-backlinks ()
   "Select from list of all notes that link to the current note."
   (interactive)
@@ -96,9 +97,10 @@ supplied. Can take a PROMPT argument."
         (find-file (consult-org-roam--select-file "Backlinks: " (consult-org-roam--ids-to-files ids)))
       (user-error "No backlinks found"))))
 
+;;;###autoload
 (defun consult-org-roam-forward-links ()
   "Select a forward link contained in the current buffer."
-  (interactive )
+  (interactive)
   (let ((id-links nil))
     (org-element-map (org-element-parse-buffer) 'link
   (lambda (link)
@@ -112,6 +114,7 @@ supplied. Can take a PROMPT argument."
         (find-file (consult-org-roam--select-file "Links: " (consult-org-roam--ids-to-files id-links)))
       (user-error "No forward links found"))))
 
+;;;###autoload
 (defun consult-org-roam-file-find ()
   "Find org-roam node with preview."
   (interactive "")
@@ -120,7 +123,6 @@ supplied. Can take a PROMPT argument."
 ;; Completing-read interface using consult. Override
 ;; `org-roam-node-read' so that each an every completing function
 ;; resorts to consult
-;;;###autoload
 (defun consult-org-roam-node-read (&optional initial-input filter-fn sort-fn
                                      require-match prompt)
   "Read and return an `org-roam-node' with the help of consult.
@@ -212,7 +214,6 @@ defaulting to \"Node: \""
 ;; Completing-read interface for references using consult. Override
 ;; `org-roam-ref-read' so that each an every completing function
 ;; regarding refs resorts to consult
-;;;###autoload
 (defun consult-org-roam-ref-read (&optional initial-input filter-fn)
   "Read a ref and return its `org-roam-node' with the help of consult.
 INITIAL-INPUT is the initial prompt value.
@@ -247,6 +248,7 @@ filtered out."
 
 (add-to-list 'minor-mode-alist '(consult-org-roam " consult-org-roam"))
 
+;;;###autoload
 (defun consult-org-roam-mode (&optional ARG)
   "Toggle `consult-org-roam-mode' to integrate consult with org-roam.
 By enabling `consult-org-roam-mode' the functions `org-roam-node-read' and
