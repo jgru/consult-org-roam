@@ -146,61 +146,16 @@ defaulting to \"Node: \""
     (if (org-roam-node-p node) (progn node)
         (progn (org-roam-node-create :title node)))))
 
-(defun consult-org-roam--temporary-nodes ()
-  "Return a function to open nodes temporarily."
-  (let* ((new-buffers)
-         (old-buffers (buffer-list))
-         (dir default-directory))
-    (lambda (&optional node)
-      (if node
-          ;; Preview only, when it is an org-roam node
-          (when (org-roam-node-p node)
-            (let ((default-directory dir)
-                  (inhibit-message t)
-                  (enable-dir-local-variables nil)
-                  (enable-local-variables (and enable-local-variables :safe))
-                  (non-essential t)
-                  (name (org-roam-node-file node)))
-              (or
-               ;; get-file-buffer is only a small optimization here. It
-               ;; may not find the actual buffer, for directories it
-               ;; returns nil instead of returning the Dired buffer.
-               (get-file-buffer name)
-               ;; file-attributes may throw permission denied error
-               (when-let* ((attrs (ignore-errors (file-attributes name)))
-                           (size (file-attribute-size attrs)))
-                 (if (> size consult-preview-max-size)
-                     (prog1 nil
-                       (message "File `%s' (%s) is too large for preview"
-                                name (file-size-human-readable size)))
-                   (cl-letf* (((default-value 'find-file-hook)
-                               (seq-remove (lambda (x)
-                                             (memq x consult-preview-excluded-hooks))
-                                           (default-value 'find-file-hook)))
-                              (buf (find-file-noselect
-                                    name 'nowarn
-                                    (> size consult-preview-raw-size))))
-                     ;; Only add new buffer if not already in the list
-                     (unless (or (memq buf new-buffers) (memq buf old-buffers))
-                       (push buf new-buffers)
-                       ;; Only keep a few buffers alive
-                       (while (> (length new-buffers) consult-preview-max-count)
-                         (consult--kill-clean-buffer (car (last new-buffers)))
-                         (setq new-buffers (nbutlast new-buffers))))
-                     buf))))))
-        ;; clean buffers, even if it is not an org-roam-node
-        (mapc #'consult--kill-clean-buffer new-buffers)))))
-
 (defun consult-org-roam--node-preview ()
   "Create preview function for nodes."
-  (let ((open (consult-org-roam--temporary-nodes))
+  (let ((open (consult--temporary-files))
         (preview (consult--buffer-preview)))
     (lambda (cand restore)
       (if restore
           (progn
             (funcall preview nil t)
             (funcall open))
-        (funcall preview (and cand (funcall open cand)) nil)))))
+        (funcall preview (and cand (funcall open (org-roam-node-file cand))) nil)))))
 
 ;; Completing-read interface for references using consult. Override
 ;; `org-roam-ref-read' so that each an every completing function
