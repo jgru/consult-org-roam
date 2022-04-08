@@ -150,12 +150,8 @@ defaulting to \"Node: \""
   "Create preview function for nodes."
   (let ((open (consult--temporary-files))
         (preview (consult--buffer-preview)))
-    (lambda (cand restore)
-      (if restore
-          (progn
-            (funcall preview nil t)
-            (funcall open))
-        (funcall preview (and cand (funcall open (org-roam-node-file cand))) nil)))))
+    (lambda (action cand)
+        (funcall preview action (and cand (funcall open (org-roam-node-file cand)))))))
 
 ;; Completing-read interface for references using consult. Override
 ;; `org-roam-ref-read' so that each an every completing function
