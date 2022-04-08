@@ -151,7 +151,12 @@ defaulting to \"Node: \""
   (let ((open (consult--temporary-files))
         (preview (consult--buffer-preview)))
     (lambda (action cand)
-        (funcall preview action (and cand (funcall open (org-roam-node-file cand)))))))
+      (when (eq action 'exit)
+        (funcall open))
+      (funcall preview action
+               (and cand
+                    (eq action 'preview)
+                    (funcall open (org-roam-node-file cand)))))))
 
 ;; Completing-read interface for references using consult. Override
 ;; `org-roam-ref-read' so that each an every completing function
