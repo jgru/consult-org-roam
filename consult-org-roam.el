@@ -128,22 +128,24 @@ PROMPT is a string to show at the beginning of the mini-buffer,
 defaulting to \"Node: \""
   (let* ((nodes (org-roam-node-read--completions filter-fn sort-fn))
          (prompt (or prompt "Node: "))
+         (state-func (when nodes
+                       (consult-org-roam--node-preview)))
          (node
-          (when nodes (consult--read
-                       nodes
-                       :prompt prompt
-                       :initial initial-input
-                       :predicate filter-fn
-                       :sort sort-fn
-                       :require-match require-match
-                       :category 'org-roam-node
-                       ;;:history 'org-roam-node-history
-                       :annotate (lambda (title)
-                                   (funcall org-roam-node-annotation-function
-                                            (get-text-property 0 'node title)))
-                       :state (consult-org-roam--node-preview)
-                       ;; uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
-                       :lookup (lambda (_ candidates input)(alist-get input candidates input nil #'equal))))))
+          (consult--read
+           nodes
+           :prompt prompt
+           :initial initial-input
+           :predicate filter-fn
+           :sort sort-fn
+           :require-match require-match
+           :category 'org-roam-node
+           ;;:history 'org-roam-node-history
+           :annotate (lambda (title)
+                       (funcall org-roam-node-annotation-function
+                                (get-text-property 0 'node title)))
+           :state state-func
+           ;; uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
+           :lookup (lambda (_ candidates input)(alist-get input candidates input nil #'equal)))))
     (if (org-roam-node-p node) (progn node)
       (progn (org-roam-node-create :title node)))))
 
