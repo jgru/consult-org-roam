@@ -161,7 +161,8 @@ defaulting to \"Node: \""
       (funcall preview action
                (and cand
                     (eq action 'preview)
-                    (funcall open (org-roam-node-file cand)))))))
+                    (if (org-roam-node-p cand)
+                        (funcall open (org-roam-node-file cand))))))))
 
 ;; Completing-read interface for references using consult. Override
 ;; `org-roam-ref-read' so that each an every completing function
