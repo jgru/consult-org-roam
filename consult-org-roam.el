@@ -128,6 +128,8 @@ PROMPT is a string to show at the beginning of the mini-buffer,
 defaulting to \"Node: \""
   (let* ((nodes (org-roam-node-read--completions filter-fn sort-fn))
          (prompt (or prompt "Node: "))
+         ;; Sets state-func only when there are nodes to avoid errors
+         ;; with empty roam-dirs
          (state-func (when nodes
                        (consult-org-roam--node-preview)))
          (node
@@ -144,7 +146,7 @@ defaulting to \"Node: \""
                        (funcall org-roam-node-annotation-function
                                 (get-text-property 0 'node title)))
            :state state-func
-           ;; uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
+           ;; Uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
            :lookup (lambda (_ candidates input)(alist-get input candidates input nil #'equal)))))
     (if (org-roam-node-p node) (progn node)
       (progn (org-roam-node-create :title node)))))
