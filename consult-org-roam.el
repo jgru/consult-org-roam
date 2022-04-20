@@ -147,7 +147,7 @@ defaulting to \"Node: \""
                                 (get-text-property 0 'node title)))
            :state state-func
            ;; Uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
-           :lookup (lambda (selected candidates input _narrow) (alist-get selected candidates input #'equal)))))
+           :lookup (lambda (selected candidates input narrow) (alist-get selected candidates input nil #'equal)))))
     (if (org-roam-node-p node) (progn node)
       (progn (org-roam-node-create :title node)))))
 
