@@ -151,18 +151,43 @@ defaulting to \"Node: \""
     (if (org-roam-node-p node) (progn node)
       (progn (org-roam-node-create :title node)))))
 
+(defun consult-org-roam--buffer-preview ()
+  "Function to preview an org-roam-node."
+  ;; Only preview in current window and other window.
+  ;; Preview in frames and tabs is not possible since these don't get cleaned up.
+  (if (memq consult--buffer-display
+            '(switch-to-buffer switch-to-buffer-other-window))
+      (let ((orig-buf (current-buffer)) other-win)
+        (lambda (action cand point)
+          (when (eq action 'preview)
+            (when (and (eq consult--buffer-display #'switch-to-buffer-other-window)
+                       (not other-win))
+              (switch-to-buffer-other-window orig-buf)
+              (setq other-win (selected-window)))
+            (let ((win (or other-win (selected-window))))
+              (when (window-live-p win)
+                (with-selected-window win
+                  (cond
+                   ((and cand (get-buffer cand))
+                    (switch-to-buffer cand 'norecord)
+                    (set-window-start win point))
+                   ((buffer-live-p orig-buf)
+                    (switch-to-buffer orig-buf 'norecord)))))))))
+    #'ignore))
+
 (defun consult-org-roam--node-preview ()
   "Create preview function for nodes."
   (let ((open (consult--temporary-files))
-        (preview (consult--buffer-preview)))
+        (preview (consult-org-roam--buffer-preview)))
     (lambda (action cand)
       (when (eq action 'exit)
         (funcall open))
-      (funcall preview action
-               (and cand
-                    (eq action 'preview)
-                    (if (org-roam-node-p cand)
-                        (funcall open (org-roam-node-file cand))))))))
+      (if (org-roam-node-p cand)
+          (funcall preview action
+                   (and cand
+                        (eq action 'preview)
+                        (funcall open (org-roam-node-file cand)))
+                   (org-roam-node-point cand))))))
 
 ;; Completing-read interface for references using consult. Override
 ;; `org-roam-ref-read' so that each an every completing function
