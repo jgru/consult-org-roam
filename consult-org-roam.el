@@ -78,16 +78,21 @@ supplied. Can take a PROMPT argument."
   "Select from list of all notes that link to the current note."
   (interactive)
   (let* ((node (org-roam-node-at-point))
-         (ids (org-roam-db-query
+         (ids (mapcar (lambda (el) (car el))(org-roam-db-query
             [:select [source]
                      :from links
                      :where (= dest $s1)
                      :and (= type "id")]
             (if node
                 (org-roam-node-id (org-roam-node-at-point))
-              (user-error "Buffer does not contain org-roam-nodes")))))
+              (user-error "Buffer does not contain org-roam-nodes"))))))
     (if ids
-        (find-file (consult-org-roam--select-file "Backlinks: " (consult-org-roam--ids-to-files ids)))
+        (org-roam-node-read ""
+                            (lambda (n)
+                              (if (org-roam-node-p n)
+                                  (if (member (org-roam-node-id n) ids)
+                                      t
+                                    nil))))
       (user-error "No backlinks found"))))
 
 ;;;###autoload
@@ -126,7 +131,7 @@ for an example sort function.
 If REQUIRE-MATCH, the minibuffer prompt will require a match.
 PROMPT is a string to show at the beginning of the mini-buffer,
 defaulting to \"Node: \""
-  (let* ((nodes (org-roam-node-read--completions filter-fn sort-fn))
+  (let* ((nodes (org-roam-node-read--completions filter-fn sort-fn)) ;;
          (prompt (or prompt "Node: "))
          ;; Sets state-func only when there are nodes to avoid errors
          ;; with empty roam-dirs
@@ -137,7 +142,7 @@ defaulting to \"Node: \""
            nodes
            :prompt prompt
            :initial initial-input
-           :predicate filter-fn
+           ;;:predicate filter-fn ;; has a different structure than org-roam's filter func
            :sort sort-fn
            :require-match require-match
            :category 'org-roam-node
