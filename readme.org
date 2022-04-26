@@ -1,10 +1,13 @@
-* =consult-org-roam= -- An Unofficial Extension
-This is a small collection of functions to operate [[https://github.com/org-roam/org-roam][org-roam]] with the
-help of [[https://github.com/minad/consult][consult]] and its live preview feature.
+#+title: =consult-org-roam=
+#+author: jgru
+#+language: en
+
+#+html: <a href="https://www.gnu.org/software/emacs/"><img alt="GNU Emacs" src="https://github.com/minad/corfu/blob/screenshots/emacs.svg?raw=true"/></a>
+#+html: <a href="https://melpa.org/#/consult-org-roam"><img alt="MELPA" src="https://melpa.org/packages/consult-org-roam-badge.svg"/></a>
 
 * Overview and usage
-=consult-org-roam.el= provides several functions to connect org-roam
-to consult's completing read interface. On the one hand, it provides
+=consult-org-roam.el= provides several functions to connect [[https://github.com/org-roam/org-roam][org-roam]]
+to [[https://github.com/minad/consult][consult]]'s completing read interface. On the one hand, it provides
 the following standalone functions which enhance =org-roam='s
 capabilities:
 
@@ -13,6 +16,8 @@ capabilities:
 - =consult-org-roam-backlinks= :: List backlinks to
   =org-roam-node-at-point= (e.g. currently open note) and sift through
   them with consult's completing-read and its live preview
+- =consult-org-roam-forward-links :: List forward links contained in
+  the currently opened note
 - =consult-org-roam-file-find= :: Search your org-roam files with
   consult's completing-read and its live preview
 
@@ -29,10 +34,10 @@ functions. This can be done by adding using
 =consult-customize=.
 
 * Installation
-
+Install it from Melpa
 #+begin_src elisp
 (use-package consult-org-roam
-   :straight (:host github :repo "jgru/consult-org-roam")
+   :ensure t
    :init
    (require 'consult-org-roam)
    ;; Activate the minor-mode
