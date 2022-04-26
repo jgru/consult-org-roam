@@ -78,16 +78,20 @@ supplied. Can take a PROMPT argument."
   "Select from list of all notes that link to the current note."
   (interactive)
   (let* ((node (org-roam-node-at-point))
-         (ids (org-roam-db-query
+         (ids (mapcar (lambda (el) (car el))(org-roam-db-query
             [:select [source]
                      :from links
                      :where (= dest $s1)
                      :and (= type "id")]
             (if node
                 (org-roam-node-id (org-roam-node-at-point))
-              (user-error "Buffer does not contain org-roam-nodes")))))
+              (user-error "Buffer does not contain org-roam-nodes"))))))
     (if ids
-        (find-file (consult-org-roam--select-file "Backlinks: " (consult-org-roam--ids-to-files ids)))
+        (consult-org-roam-node-read "" (lambda (n)
+                                 (if (org-roam-node-p n)
+                                     (if (member (org-roam-node-id n) ids)
+                                         t
+                                       nil))))
       (user-error "No backlinks found"))))
 
 ;;;###autoload
@@ -96,14 +100,16 @@ supplied. Can take a PROMPT argument."
   (interactive)
   (let ((id-links '()))
     (org-element-map (org-element-parse-buffer) 'link
-  (lambda (link)
-    (when (string= (org-element-property :type link) "id")
-      ;; Use add-to-list to avoid duplicates
-      (push ;; wrap each link in a list to be conformant
-            ;; with the format expected by consult-org-roam--ids-to-files
-            (list (org-element-property :path link)) id-links))))
+      (lambda (link)
+        (when (string= (org-element-property :type link) "id")
+          (push
+           (org-element-property :path link) id-links))))
     (if id-links
-        (find-file (consult-org-roam--select-file "Links: " (consult-org-roam--ids-to-files (delete-dups id-links))))
+        (consult-org-roam-node-read "" (lambda (n)
+                                 (if (org-roam-node-p n)
+                                     (if (member (org-roam-node-id n) id-links)
+                                         t
+                                       nil))))
       (user-error "No forward links found"))))
 
 ;;;###autoload
@@ -122,11 +128,11 @@ INITIAL-INPUT is the initial minibuffer prompt value.
 FILTER-FN is a function to filter out nodes: it takes an `org-roam-node',
 and when nil is returned the node will be filtered out.
 SORT-FN is a function to sort nodes. See `org-roam-node-read-sort-by-file-mtime'
-for an example sort function.
+for an example sort function.filter-fn sort-fn
 If REQUIRE-MATCH, the minibuffer prompt will require a match.
 PROMPT is a string to show at the beginning of the mini-buffer,
 defaulting to \"Node: \""
-  (let* ((nodes (org-roam-node-read--completions filter-fn sort-fn))
+  (let* ((nodes (org-roam-node-read--completions filter-fn sort-fn)) ;;
          (prompt (or prompt "Node: "))
          ;; Sets state-func only when there are nodes to avoid errors
          ;; with empty roam-dirs
@@ -137,7 +143,6 @@ defaulting to \"Node: \""
            nodes
            :prompt prompt
            :initial initial-input
-           :predicate filter-fn
            :sort sort-fn
            :require-match require-match
            :category 'org-roam-node
@@ -158,10 +163,13 @@ defaulting to \"Node: \""
     (lambda (action cand)
       (when (eq action 'exit)
         (funcall open))
-      (funcall preview action
-               (and cand
-                    (eq action 'preview)
-                    (if (org-roam-node-p cand)
+      (if (org-roam-node-p cand)
+          (funcall preview action
+                   (and cand
+                        (eq action 'preview)
+                        (set-window-start
+                         (selected-window)
+                         (org-roam-node-point cand))
                         (funcall open (org-roam-node-file cand))))))))
 
 ;; Completing-read interface for references using consult. Override
