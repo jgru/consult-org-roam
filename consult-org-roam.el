@@ -147,9 +147,6 @@ defaulting to \"Node: \""
            :require-match require-match
            :category 'org-roam-node
            ;;:history 'org-roam-node-history
-           :annotate (lambda (title)
-                       (funcall org-roam-node-annotation-function
-                                (get-text-property 0 'node title)))
            :state state-func
            ;; Uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
            :lookup (lambda (selected candidates input narrow) (alist-get selected candidates input nil #'equal)))))
@@ -192,7 +189,6 @@ filtered out."
                 :require-match t
                 :category 'org-roam-ref
                 :history 'org-roam-ref-history
-                :annotate org-roam-ref-annotation-function
                 :state (consult-org-roam--node-preview)
                 :lookup #'consult--lookup-cdr)))
     (progn ref)))
