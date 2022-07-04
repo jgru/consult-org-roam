@@ -14,7 +14,7 @@ to [[https://github.com/minad/consult][consult]]'s completing read interface. On
 the following standalone functions which enhance =org-roam='s
 capabilities:
 
-- =consult-org-roam-rg-search= :: Search your roam-directory with grep
+- =consult-org-roam-search= :: Search your roam-directory with grep
   or [[https://github.com/BurntSushi/ripgrep][ripgrep]]
 - =consult-org-roam-backlinks= :: List backlinks to
   =org-roam-node-at-point= (e.g. currently open note) and sift through
