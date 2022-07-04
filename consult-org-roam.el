@@ -199,6 +199,7 @@ filtered out."
 By enabling `consult-org-roam-mode' the functions `org-roam-node-read' and
 `org-roam-ref-read' are overriden by consults-org-roam's equivalents. Optional
 argument ARG indicates whether the mode should be enabled or disabled."
+  :global t
   :lighter " cor"
   ;; Add or remove advice when enabled respectively disabled
   (if consult-org-roam-mode
