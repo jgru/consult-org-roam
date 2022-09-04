@@ -19,7 +19,7 @@ capabilities:
 - =consult-org-roam-backlinks= :: List backlinks to
   =org-roam-node-at-point= (e.g. currently open note) and sift through
   them with consult's completing-read and its live preview
-- =consult-org-roam-forward-links :: List forward links contained in
+- =consult-org-roam-forward-links= :: List forward links contained in
   the currently opened note
 - =consult-org-roam-file-find= :: Search your org-roam files with
   consult's completing-read and its live preview
