@@ -148,6 +148,9 @@ defaulting to \"Node: \""
            :category 'org-roam-node
            ;;:history 'org-roam-node-history
            :state state-func
+           :annotate (lambda (title)
+                       (funcall org-roam-node-annotation-function
+                                (get-text-property 0 'node title)))
            ;; Uses the DEFAULT argument of alist-get to return input in case the input is not found as key.
            :lookup (lambda (selected candidates input narrow) (alist-get selected candidates input nil #'equal)))))
     (if (org-roam-node-p node) (progn node)
