@@ -109,22 +109,26 @@ If OTHER-WINDOW, visit the NODE in another window."
     (consult-org-roam--open-or-capture other-window chosen-node-or-str)))
 
 ;;;###autoload
-(defun consult-org-roam-forward-links ()
-  "Select a forward link contained in the current buffer."
+(defun consult-org-roam-forward-links (&optional other-window)
+  "Select a forward link contained in the current buffer.
+If OTHER-WINDOW, visit the NODE in another window."
   (interactive)
-  (let ((id-links '()))
+  (let ((id-links '())
+        (chosen-node-or-str nil))
     (org-element-map (org-element-parse-buffer) 'link
       (lambda (link)
         (when (string= (org-element-property :type link) "id")
           (push
            (org-element-property :path link) id-links))))
-    (if id-links
-        (consult-org-roam-node-read "" (lambda (n)
-                                 (if (org-roam-node-p n)
+    (setq chosen-node-or-str (if id-links
+                               (consult-org-roam-node-read ""
+                                 (lambda (n)
+                                   (if (org-roam-node-p n)
                                      (if (member (org-roam-node-id n) id-links)
-                                         t
+                                       t
                                        nil))))
-      (user-error "No forward links found"))))
+                               (user-error "No forward links found")))
+    (consult-org-roam--open-or-capture other-window chosen-node-or-str)))
 
 ;;;###autoload
 (defun consult-org-roam-file-find ()
