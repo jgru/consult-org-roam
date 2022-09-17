@@ -193,6 +193,8 @@ filtered out."
                 :category 'org-roam-ref
                 :history 'org-roam-ref-history
                 :state (consult-org-roam--node-preview)
+                :annotate (lambda (ref)
+                            (funcall org-roam-ref-annotation-function ref))
                 :lookup #'consult--lookup-cdr)))
     (progn ref)))
 
