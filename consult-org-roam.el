@@ -85,9 +85,10 @@ If OTHER-WINDOW, visit the NODE in another window."
         :props '(:finalize find-file)))))
 
 ;;;###autoload
-(defun consult-org-roam-backlinks ()
-  "Select from list of all notes that link to the current note."
-  (interactive)
+(defun consult-org-roam-backlinks (&optional other-window)
+  "Select from list of all notes that link to the current note.
+If OTHER-WINDOW, visit the NODE in another window."
+  (interactive current-prefix-arg)
   (let* ((node (org-roam-node-at-point))
          (ids (mapcar (lambda (el) (car el))(org-roam-db-query
             [:select [source]
@@ -96,14 +97,16 @@ If OTHER-WINDOW, visit the NODE in another window."
                      :and (= type "id")]
             (if node
                 (org-roam-node-id (org-roam-node-at-point))
-              (user-error "Buffer does not contain org-roam-nodes"))))))
-    (if ids
-        (consult-org-roam-node-read "" (lambda (n)
-                                 (if (org-roam-node-p n)
-                                     (if (member (org-roam-node-id n) ids)
-                                         t
-                                       nil))))
-      (user-error "No backlinks found"))))
+              (user-error "Buffer does not contain org-roam-nodes")))))
+          (chosen-node-or-str (if ids
+                                (consult-org-roam-node-read ""
+                                  (lambda (n)
+                                    (if (org-roam-node-p n)
+                                      (if (member (org-roam-node-id n) ids)
+                                        t
+                                        nil))))
+                                (user-error "No backlinks found"))))
+    (consult-org-roam--open-or-capture other-window chosen-node-or-str)))
 
 ;;;###autoload
 (defun consult-org-roam-forward-links ()
