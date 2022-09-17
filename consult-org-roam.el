@@ -73,6 +73,17 @@ supplied. Can take a PROMPT argument."
               (org-roam-node-file (org-roam-node-from-id (car id))))
          ids))
 
+(defun consult-org-roam--open-or-capture (&optional other-window node-or-string)
+  "Take an `org-roam-node' and open it or take a string and capture it.
+NODE-OR-STRING the `org-roam-node' or string.
+If OTHER-WINDOW, visit the NODE in another window."
+  (if node-or-string
+    (if (org-roam-node-file node-or-string)
+      (org-roam-node-visit node-or-string other-window)
+      (org-roam-capture-
+        :node (org-roam-node-create :title node-or-string)
+        :props '(:finalize find-file)))))
+
 ;;;###autoload
 (defun consult-org-roam-backlinks ()
   "Select from list of all notes that link to the current note."
