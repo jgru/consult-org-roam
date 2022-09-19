@@ -35,7 +35,7 @@
   :group 'convenience
   :prefix "consult-org-roam-")
 
-(defcustom consult-org-roam-grep-func #'consult-ripgrep
+(defcustom consult-org-roam-grep-func #'consult-grep
   "Function for searching files."
    :type 'function
    :group 'consult-org-roam)
