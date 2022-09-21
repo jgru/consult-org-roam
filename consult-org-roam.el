@@ -44,6 +44,7 @@
 ;;;; Functions
 ;; ============================================================================
 
+;;;###autoload
 (defun consult-org-roam-search (&optional initial)
   "Search org-roam directory using `consult-ripgrep' with live-preview.
 With an option for INITIAL input when called non-interactively."
