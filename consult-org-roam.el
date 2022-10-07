@@ -24,6 +24,7 @@
 
 (require 'org-roam)
 (require 'consult)
+(require 'consult-org-roam-buffer)
 
 ;; ============================================================================
 ;;;; Customize definitions
