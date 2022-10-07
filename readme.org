@@ -51,11 +51,13 @@ Install it from Melpa
 #+begin_src elisp
 (use-package consult-org-roam
    :ensure t
+   :after org-roam
    :init
    (require 'consult-org-roam)
-   ;; Activate the minor-mode
+   ;; Activate the minor mode
    (consult-org-roam-mode 1)
    :custom
+   (consult-org-roam-buffer-narrow-key ?r)
    (consult-org-roam-grep-func #'consult-ripgrep)
    :config
    ;; Eventually suppress previewing for certain functions
