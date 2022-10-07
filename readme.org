@@ -18,19 +18,19 @@ to [[https://github.com/minad/consult][consult]]'s completing read interface. On
 the following standalone functions which enhance =org-roam='s
 capabilities:
 
-- =consult-org-roam-search= :: Search your roam-directory with grep
-  or [[https://github.com/BurntSushi/ripgrep][ripgrep]]
+- =consult-org-roam-file-find= :: Search your org-roam files with
+  consult's completing-read and its live preview
 - =consult-org-roam-backlinks= :: List backlinks to
   =org-roam-node-at-point= (e.g. currently open note) and sift through
   them with consult's completing-read and its live preview
 - =consult-org-roam-forward-links= :: List forward links contained in
   the currently opened note
-- =consult-org-roam-file-find= :: Search your org-roam files with
-  consult's completing-read and its live preview
+- =consult-org-roam-search= :: [[https://github.com/minad/consult#asynchronous-search][Asynchronously search]] your
+  roam-directory with [[https://www.gnu.org/software/grep/manual/grep.html][grep]] or [[https://github.com/BurntSushi/ripgrep][ripgrep]]
 
 On the other hand, it provides a minormode called
-=consult-org-roam-mode=. When activated =org-roam-node-read= is
-overridden which is used by =org-roam-node-find=,
+=consult-org-roam-mode=. When activated, =org-roam-node-read= is
+overridden, which is used by =org-roam-node-find=,
 =org-roam-node-insert= and =org-roam-refile=. By doing so, all
 functions utilizing completing-read resort to =consult= for performing
 completion. Furthermore, the same is done for =org-roam-ref-read= so
