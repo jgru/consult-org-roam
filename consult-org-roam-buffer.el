@@ -131,6 +131,7 @@
        (append (list 'org-roam-buffer-source) tail)))
     (add-to-list 'consult-buffer-sources 'org-roam-buffer-source 'append)))
 
+(eval-after-load
 ;; Customize consult--source-buffer to show org-roam buffers only in
 ;; their dedicated section
 (consult-customize
@@ -141,5 +142,7 @@
              :as #'buffer-name
              :predicate (lambda (buf) (not (org-roam-buffer-p buf))))))
 
-(consult-org-roam-buffer-setup)
+  (consult-org-roam-buffer-setup))
+
+(provide 'consult-org-roam-buffer)
 ;;; consult-org-roam-buffer.el ends here
