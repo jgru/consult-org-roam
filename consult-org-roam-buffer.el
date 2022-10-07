@@ -101,9 +101,6 @@
   (consult-org-roam-buffer--update-open-buffer-list)
   (cdr (assoc title org-roam-buffer-open-buffer-list)))
 
-(autoload 'org-roam-buffer-list "org-roam")
-(add-to-list 'consult-buffer-sources 'org-roam-buffer-source 'append)
-
 (defun consult-org-roam-buffer--get-roam-bufs ()
   "Return list of currently open org-roam buffers"
   (consult--buffer-query
