@@ -69,7 +69,13 @@
             (filename (buffer-file-name buffer))
             (fhash (consult-org-roam-db--file-hash filename)))
       (if fhash
-        (concat title " [" (substring fhash 0 7) "]")
+        (progn
+          ;; Add hash to differentiate between notes with identical
+          ;; titles but make it invisible to not disturb the user
+          (add-text-properties 0 (length fhash) '(invisible t) fhash)
+          (concat title fhash))
+        ;; Handle edge cases where the org-roam buffer has not yet
+        ;; been written to disk (and DB)
         (concat title " [not persisted]")))))
 
 (defun consult-org-roam-db--file-hash (fname)
