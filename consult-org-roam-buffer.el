@@ -19,9 +19,7 @@
 ;;;; Dependencies
 ;; ============================================================================
 
-(if (locate-library "org-roam")
-    (require 'org-roam)
-  (error "Org-roam not found!"))
+(require 'org-roam)
 (require 'consult)
 
 ;; ============================================================================
