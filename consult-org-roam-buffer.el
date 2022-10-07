@@ -1,4 +1,32 @@
 ;;; consult-org-roam-buffer.el --- Consult-buffer integration for org-roam  -*- lexical-binding: t; -*-
+;; Copyright (C) 2022 jgru
+
+;; Author: apc <https://github.com/apc> and jgru <https://github.com/jgru>
+;; Created: October 7th, 2022
+;; SPDX-License-Identifier: GPL-3.0-or-later
+;; Version: 0.1
+;; Homepage: https://github.com/jgru/consult-org-roam
+;; Package-Requires: ((emacs "27.1") (org-roam "2.2.0") (consult "0.16"))
+
+;;; Commentary:
+
+;; This is a set of functions to add a custom source to consult-buffer
+;; for org-roam notes.
+
+;;; Code:
+
+;; ============================================================================
+;;;; Dependencies
+;; ============================================================================
+
+(if (locate-library "org-roam")
+    (require 'org-roam)
+  (error "Org-roam not found!"))
+(require 'consult)
+
+;; ============================================================================
+;;;; Customize definitions
+;; ============================================================================
 
 (defgroup consult-org-roam-buffer nil
   "Consult buffer source for org-roam."
@@ -10,6 +38,10 @@
   "Narrow key for consult-buffer"
   :type 'symbol
   :group 'consult-org-roam-buffer)
+
+;; ============================================================================
+;;;; Functions
+;; ============================================================================
 
 (defun consult-org-roam-buffer--state ()
   (let ((preview (consult--buffer-preview)))
