@@ -47,7 +47,9 @@ predefined narrow-key is =n= (for notes) but could be conveniently
 customized via =consult-org-roam-buffer-narrow-key=.
 
 * Installation
-Install it from Melpa
+You can install it from Melpa. If you are using =use-package=, the following
+snippet might serve as a viable starting point:
+
 #+begin_src elisp
 (use-package consult-org-roam
    :ensure t
@@ -57,7 +59,9 @@ Install it from Melpa
    ;; Activate the minor mode
    (consult-org-roam-mode 1)
    :custom
+   ;; Configure a custom narrow key for `consult-buffer'
    (consult-org-roam-buffer-narrow-key ?r)
+   ;; Use `ripgrep' for searching with `consult-org-roam-search'
    (consult-org-roam-grep-func #'consult-ripgrep)
    :config
    ;; Eventually suppress previewing for certain functions
@@ -65,6 +69,7 @@ Install it from Melpa
     consult-org-roam-forward-links
     :preview-key (kbd "M-."))
    :bind
+   ;; Define some convenient keybindings as an addition
    ("C-c n e" . consult-org-roam-file-find)
    ("C-c n b" . consult-org-roam-backlinks)
    ("C-c n l" . consult-org-roam-forward-links)
