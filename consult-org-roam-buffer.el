@@ -36,7 +36,7 @@
 
 (defcustom consult-org-roam-buffer-narrow-key ?n
   "Narrow key for consult-buffer"
-  :type 'symbol
+  :type 'key
   :group 'consult-org-roam-buffer)
 
 ;; ============================================================================
