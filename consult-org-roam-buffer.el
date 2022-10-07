@@ -103,6 +103,7 @@
     :filter t
     :predicate (lambda (buf) (org-roam-buffer-p buf))))
 
+;; Define source for consult-buffer
 (defvar org-roam-buffer-source
   `(:name     "Org-roam"
      :hidden   nil
