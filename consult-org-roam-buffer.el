@@ -39,6 +39,11 @@
   :type 'key
   :group 'consult-org-roam-buffer)
 
+(defcustom consult-org-roam-buffer-after-buffers nil
+  "If non-nil, display org-roam buffers right after non-org-roam buffers.
+  Otherwise, display org-roam buffers after any other visible default
+  source")
+
 ;; ============================================================================
 ;;;; Functions
 ;; ============================================================================
@@ -116,7 +121,14 @@
      :state    ,#'consult-org-roam-buffer--state
      :items    ,#'consult-org-roam-buffer--get-roam-bufs))
 
-(add-to-list 'consult-buffer-sources 'org-roam-buffer-source 'append)
+(defun consult-org-roam-buffer-setup ()
+  (if consult-org-roam-buffer-after-buffers
+    (let* ((idx (cl-position 'consult--source-buffer consult-buffer-sources :test 'equal))
+           (tail (nthcdr idx consult-buffer-sources)))
+      (setcdr
+       (nthcdr (1- idx) consult-buffer-sources)
+       (append (list 'org-roam-buffer-source) tail)))
+    (add-to-list 'consult-buffer-sources 'org-roam-buffer-source 'append)))
 
 ;; Customize consult--source-buffer to show org-roam buffers only in
 ;; their dedicated section
@@ -128,4 +140,5 @@
              :as #'buffer-name
              :predicate (lambda (buf) (not (org-roam-buffer-p buf))))))
 
+(consult-org-roam-buffer-setup)
 ;;; consult-org-roam-buffer.el ends here
