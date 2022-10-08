@@ -123,6 +123,9 @@
      :items    ,#'consult-org-roam-buffer--get-roam-bufs))
 
 (defun consult-org-roam-buffer-setup ()
+  ;; Remove potentially org-roam-buffer-source to avoid duplicate
+  (setq consult-buffer-sources
+    (delete 'org-roam-buffer-source consult-buffer-sources))
   (if consult-org-roam-buffer-after-buffers
     (let* ((idx (cl-position 'consult--source-buffer consult-buffer-sources :test 'equal))
            (tail (nthcdr idx consult-buffer-sources)))
