@@ -74,7 +74,7 @@
           (concat title fhash))
         ;; Handle edge cases where the org-roam buffer has not yet
         ;; been written to disk (and DB)
-        (concat title " [not persisted]")))))
+        (concat title " [File deleted]")))))
 
 (defun consult-org-roam-db--file-hash (fname)
   "Retrieve the hash of FNAME from org-roam's db "
