@@ -6,27 +6,31 @@
 #+html: <a href="https://melpa.org/#/consult-org-roam"><img alt="MELPA" src="https://melpa.org/packages/consult-org-roam-badge.svg"/></a>
 
 This is a collection of functions to operate [[https://github.com/org-roam/org-roam][org-roam]] with the help of
-[[https://github.com/minad/consult][consult]] and its live preview feature.
+[[https://github.com/minad/consult][consult]] and its live preview feature. You can use it to search, filter
+and find notes, preview backlinks as well as forward links, and sift
+through currently open org-roam buffers.
 
 * Overview and usage
+
+** =consult-org-roam.el=
 =consult-org-roam.el= provides several functions to connect [[https://github.com/org-roam/org-roam][org-roam]]
 to [[https://github.com/minad/consult][consult]]'s completing read interface. On the one hand, it provides
 the following standalone functions which enhance =org-roam='s
 capabilities:
 
-- =consult-org-roam-search= :: Search your roam-directory with grep
-  or [[https://github.com/BurntSushi/ripgrep][ripgrep]]
+- =consult-org-roam-file-find= :: Search your org-roam files with
+  consult's completing-read and its live preview
 - =consult-org-roam-backlinks= :: List backlinks to
   =org-roam-node-at-point= (e.g. currently open note) and sift through
   them with consult's completing-read and its live preview
 - =consult-org-roam-forward-links= :: List forward links contained in
   the currently opened note
-- =consult-org-roam-file-find= :: Search your org-roam files with
-  consult's completing-read and its live preview
+- =consult-org-roam-search= :: [[https://github.com/minad/consult#asynchronous-search][Asynchronously search]] your
+  roam-directory with [[https://www.gnu.org/software/grep/manual/grep.html][grep]] or [[https://github.com/BurntSushi/ripgrep][ripgrep]]
 
 On the other hand, it provides a minormode called
-=consult-org-roam-mode=. When activated =org-roam-node-read= is
-overridden which is used by =org-roam-node-find=,
+=consult-org-roam-mode=. When activated, =org-roam-node-read= is
+overridden, which is used by =org-roam-node-find=,
 =org-roam-node-insert= and =org-roam-refile=. By doing so, all
 functions utilizing completing-read resort to =consult= for performing
 completion. Furthermore, the same is done for =org-roam-ref-read= so
@@ -36,30 +40,49 @@ Eventually, you might want to suppress previewing for certain
 functions. This can be done by adding using
 =consult-customize=.
 
+** =consult-org-roam-buffer.el=
+=consult-org-roam-buffer.el= adds a new source to =consult-buffer= for
+narrowing the selection to the currently open org-roam buffers. The
+predefined narrow-key is =n= (for notes) but could be conveniently
+customized via =consult-org-roam-buffer-narrow-key=.
+
 * Installation
-Install it from Melpa
+You can install it from Melpa. If you are using =use-package=, the following
+snippet might serve as a viable starting point:
+
 #+begin_src elisp
 (use-package consult-org-roam
    :ensure t
+   :after org-roam
    :init
    (require 'consult-org-roam)
-   ;; Activate the minor-mode
+   ;; Activate the minor mode
    (consult-org-roam-mode 1)
    :custom
+   ;; Use `ripgrep' for searching with `consult-org-roam-search'
    (consult-org-roam-grep-func #'consult-ripgrep)
+   ;; Configure a custom narrow key for `consult-buffer'
+   (consult-org-roam-buffer-narrow-key ?r)
+   ;; Display org-roam buffers right after non-org-roam buffers
+   ;; in consult-buffer (and not down at the bottom)
+   (consult-org-roam-buffer-after-buffers t)
    :config
    ;; Eventually suppress previewing for certain functions
    (consult-customize
     consult-org-roam-forward-links
     :preview-key (kbd "M-."))
    :bind
+   ;; Define some convenient keybindings as an addition
    ("C-c n e" . consult-org-roam-file-find)
    ("C-c n b" . consult-org-roam-backlinks)
+   ("C-c n l" . consult-org-roam-forward-links)
    ("C-c n r" . consult-org-roam-search))
 #+end_src
 
 * Dependencies
-=consult-org-roam= is built on top of [[https://github.com/org-roam/org-roam][org-roam]] and [[https://github.com/minad/consult][consult]], it relies on its functionality.
+=consult-org-roam= is built on top of [[https://github.com/org-roam/org-roam][org-roam]] and [[https://github.com/minad/consult][consult]], it relies
+on its functionality.
 
-Furthermore, ensure that you have [[https://github.com/BurntSushi/ripgrep][ripgrep]] installed on your system, if
-you set =consult-org-roam-grep-func= to =#'consult-ripgrep=.
+Furthermore, ensure that you have at least [[https://www.gnu.org/software/grep/manual/grep.html][grep]] or [[https://github.com/BurntSushi/ripgrep][ripgrep]] installed
+on your system, and set =consult-org-roam-grep-func= to
+=#'consult-ripgrep= when using the latter.
