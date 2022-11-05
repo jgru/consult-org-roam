@@ -89,7 +89,7 @@
     (car (car fhash))))
 
 (defun consult-org-roam-buffer--add-title (buffer)
-  "Build a cons consisting of the BUFFER title and the BUFFER name"
+  "Build a cons consisting of the BUFFER title and the BUFFER name."
   (cons (consult-org-roam-buffer--get-title buffer) buffer))
 
 (defun consult-org-roam-buffer--update-open-buffer-list ()
@@ -99,12 +99,12 @@
       (org-roam-buffer-list))))
 
 (defun consult-org-roam-buffer--with-title (title)
-  "Find buffer name with TITLE from among the list of open org-roam buffers"
+  "Find buffer name with TITLE from among the list of open org-roam buffers."
   (consult-org-roam-buffer--update-open-buffer-list)
   (cdr (assoc title org-roam-buffer-open-buffer-list)))
 
 (defun consult-org-roam-buffer--get-roam-bufs ()
-  "Return list of currently open org-roam buffers"
+  "Return list of currently open org-roam buffers."
   (consult--buffer-query
     :sort 'visibility
     :as #'consult-org-roam-buffer--get-title
