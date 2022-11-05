@@ -64,8 +64,8 @@
     (let* ((title
              (with-current-buffer buffer
                (org-roam-db--file-title)))
-            (filename (buffer-name buffer))
-            (fhash (consult-org-roam-db--file-hash filename)))
+            (bufname (buffer-name buffer))
+            (fhash (consult-org-roam-db--file-hash bufname)))
       (if fhash
         (progn
           ;; Add hash to differentiate between notes with identical
@@ -74,7 +74,7 @@
           (concat title fhash))
         ;; Handle edge cases where the org-roam buffer has not yet
         ;; been written to disk (and DB)
-        (if (s-starts-with-p "CAPTURE" filename)
+        (if (s-starts-with-p "CAPTURE" bufname)
           (concat title " [Capture]")
         (concat title " [File not saved]"))))))
 
