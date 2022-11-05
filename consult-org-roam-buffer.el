@@ -92,11 +92,31 @@
   "Build a cons consisting of the BUFFER title and the BUFFER name."
   (cons (consult-org-roam-buffer--get-title buffer) buffer))
 
+(defun consult-org-roam--remove-capture-dups (buffer-list)
+  "Remove CAPTURE-duplicates from BUFFER-LIST."
+  (let ((out-list buffer-list))
+  (dolist (x buffer-list)
+    (dolist (y buffer-list)
+    (when (not (eq (buffer-name x) (buffer-name y)))
+      (if (string-match-p (regexp-quote (buffer-name y)) (buffer-name x))
+        (setq out-list (delete y buffer-list))))))
+    buffer-list))
+
+(defun consult-org-roam--buffer-list-without-dups ()
+  "Return a list of all org-roam-buffers without duplicates.
+If an org-roam-capture is in progress, there will be duplicate
+buffers one prefixed with 'CAPTURE-', therefore, it is not
+sufficient to simply is org-roam-buffer-p caused by capture
+process"
+  (consult-org-roam--remove-capture-dups (org-roam-buffer-list)))
+
 (defun consult-org-roam-buffer--update-open-buffer-list ()
-  "Generate an alist of the form `(TITLE . BUF)’, where TITLE is the title of an open org-roam buffer"
+  "Generate an alist of the form `(TITLE . BUF)’.
+Generate an alist of the form `(TITLE . BUF)’ where TITLE is the
+title of an open org-roam buffer."
   (setq org-roam-buffer-open-buffer-list
     (mapcar #'consult-org-roam-buffer--add-title
-      (org-roam-buffer-list))))
+      (consult-org-roam--buffer-list-without-dups))))
 
 (defun consult-org-roam-buffer--with-title (title)
   "Find buffer name with TITLE from among the list of open org-roam buffers."
@@ -109,7 +129,9 @@
     :sort 'visibility
     :as #'consult-org-roam-buffer--get-title
     :filter t
-    :predicate (lambda (buf) (org-roam-buffer-p buf))))
+    :predicate (lambda (buf)
+                 (member buf
+                   (consult-org-roam--buffer-list-without-dups)))))
 
 ;; Define source for consult-buffer
 (defvar org-roam-buffer-source
