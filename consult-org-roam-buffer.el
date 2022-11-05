@@ -64,7 +64,7 @@
     (let* ((title
              (with-current-buffer buffer
                (org-roam-db--file-title)))
-            (filename (buffer-file-name buffer))
+            (filename (buffer-name buffer))
             (fhash (consult-org-roam-db--file-hash filename)))
       (if fhash
         (progn
@@ -74,7 +74,7 @@
           (concat title fhash))
         ;; Handle edge cases where the org-roam buffer has not yet
         ;; been written to disk (and DB)
-        (concat title " [File deleted]")))))
+        (concat title " [File not saved]")))))
 
 (defun consult-org-roam-db--file-hash (fname)
   "Retrieve the hash of FNAME from org-roam's db "
@@ -117,7 +117,7 @@
      :category org-roam-buffer
      :annotate ,(lambda (cand)
                   (f-filename
-                    (buffer-file-name
+                    (buffer-name
                       (consult-org-roam-buffer--with-title cand))))
      :state    ,#'consult-org-roam-buffer--state
      :items    ,#'consult-org-roam-buffer--get-roam-bufs))
