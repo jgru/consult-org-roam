@@ -74,7 +74,9 @@
           (concat title fhash))
         ;; Handle edge cases where the org-roam buffer has not yet
         ;; been written to disk (and DB)
-        (concat title " [File not saved]")))))
+        (if (s-starts-with-p "CAPTURE" filename)
+          (concat title " [Capture]")
+        (concat title " [File not saved]"))))))
 
 (defun consult-org-roam-db--file-hash (fname)
   "Retrieve the hash of FNAME from org-roam's db "
