@@ -105,9 +105,9 @@
 (defun consult-org-roam--buffer-list-without-dups ()
   "Return a list of all org-roam-buffers without duplicates.
 If an org-roam-capture is in progress, there will be duplicate
-buffers one prefixed with 'CAPTURE-', therefore, it is not
-sufficient to simply is org-roam-buffer-p caused by capture
-process"
+buffers in the list returned by `org-roam-buffer-list';
+therefore, we need to filter the duplicate buffers (prefixed
+with 'CAPTURE-') out of this list."
   (consult-org-roam--remove-capture-dups (org-roam-buffer-list)))
 
 (defun consult-org-roam-buffer--update-open-buffer-list ()
