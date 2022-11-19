@@ -109,28 +109,27 @@ therefore, we need to filter the duplicate buffers (prefixed
 with 'CAPTURE-') out of this list."
   (consult-org-roam--remove-capture-dups (org-roam-buffer-list)))
 
-(defun consult-org-roam-buffer--update-open-buffer-list ()
-  "Generate an alist of the form `(TITLE . BUF)’.
+(defun consult-org-roam-buffer--update-open-buffer-list (buffer-list)
+  "Generate an alist of the form `(TITLE . BUF) from BUFFER-LIST’.
 Generate an alist of the form `(TITLE . BUF)’ where TITLE is the
 title of an open org-roam buffer."
   (setq org-roam-buffer-open-buffer-list
-    (mapcar #'consult-org-roam-buffer--add-title
-      (consult-org-roam--buffer-list-without-dups))))
+    (mapcar #'consult-org-roam-buffer--add-title buffer-list)))
 
 (defun consult-org-roam-buffer--with-title (title)
   "Find buffer name with TITLE from among the list of open org-roam buffers."
-  (consult-org-roam-buffer--update-open-buffer-list)
   (cdr (assoc title org-roam-buffer-open-buffer-list)))
 
 (defun consult-org-roam-buffer--get-roam-bufs ()
   "Return list of currently open org-roam buffers."
-  (consult--buffer-query
+  (let ((buffer-list-no-dups (consult-org-roam--buffer-list-without-dups)))
+    (consult-org-roam-buffer--update-open-buffer-list buffer-list-no-dups)
+    (consult--buffer-query
     :sort 'visibility
     :as #'consult-org-roam-buffer--get-title
     :filter t
     :predicate (lambda (buf)
-                 (member buf
-                   (consult-org-roam--buffer-list-without-dups)))))
+                   (member buf buffer-list-no-dups)))))
 
 ;; Define source for consult-buffer
 (defvar org-roam-buffer-source
