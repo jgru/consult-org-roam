@@ -95,12 +95,11 @@
 (defun consult-org-roam--remove-capture-dups (buffer-list)
   "Remove CAPTURE-duplicates from BUFFER-LIST."
   (let ((out-list buffer-list))
-  (dolist (x buffer-list)
-    (dolist (y buffer-list)
-    (when (not (eq (buffer-name x) (buffer-name y)))
-      (if (string-match-p (regexp-quote (buffer-name y)) (buffer-name x))
-        (setq out-list (delete y buffer-list))))))
-    buffer-list))
+    (dolist (x buffer-list)
+      (when (s-starts-with-p "CAPTURE-" (buffer-name x))
+        (setq out-list (delete x buffer-list))
+        ))
+    out-list))
 
 (defun consult-org-roam--buffer-list-without-dups ()
   "Return a list of all org-roam-buffers without duplicates.
