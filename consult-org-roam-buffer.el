@@ -21,6 +21,7 @@
 
 (require 'org-roam)
 (require 'consult)
+(require 'f)
 
 ;; ============================================================================
 ;;;; Customize definitions
