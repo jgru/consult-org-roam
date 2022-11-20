@@ -75,7 +75,7 @@
           (concat title fhash))
         ;; Handle edge cases where the org-roam buffer has not yet
         ;; been written to disk (and DB)
-        (if (s-starts-with-p "CAPTURE" bufname)
+        (if (string-match-p (regexp-quote "CAPTURE") bufname)
           (concat title " [Capture]")
         (concat title " [File not saved]"))))))
 
@@ -97,7 +97,7 @@
   "Remove CAPTURE-duplicates from BUFFER-LIST."
   (let ((out-list buffer-list))
     (dolist (x buffer-list)
-      (when (s-starts-with-p "CAPTURE-" (buffer-name x))
+      (when  (string-match-p (regexp-quote "CAPTURE-") (buffer-name x))
         (setq out-list (delete x buffer-list))
         ))
     out-list))
