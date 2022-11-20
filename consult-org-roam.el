@@ -233,6 +233,7 @@ argument ARG indicates whether the mode should be enabled or disabled."
         (advice-add #'org-roam-node-read :override #'consult-org-roam-node-read)
         (advice-add #'org-roam-ref-read :override #'consult-org-roam-ref-read))
     (progn
+      (consult-org-roam-buffer-teardown)
       (advice-remove #'org-roam-node-read #'consult-org-roam-node-read)
       (advice-remove #'org-roam-ref-read #'consult-org-roam-ref-read))))
 

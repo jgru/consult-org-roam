@@ -146,29 +146,49 @@ title of an open org-roam buffer."
      :items    ,#'consult-org-roam-buffer--get-roam-bufs))
 
 (defun consult-org-roam-buffer-setup ()
-  ;; Remove potentially org-roam-buffer-source to avoid duplicate
-  (setq consult-buffer-sources
-    (delete 'org-roam-buffer-source consult-buffer-sources))
+  "Setup consult-org-roam-buffer functionality.
+Setup consult-org-roam-buffer functionality by adding
+org-roam-buffer-source to consult-buffer-sources and customizing
+consult--source-buffer."
+  ;; Remove org-roam-buffer-source to avoid duplicate
+  (consult-org-roam-buffer-teardown)
+  (consult-org-roam-buffer--customize-source-buffer t)
   (if consult-org-roam-buffer-after-buffers
-    (let* ((idx (cl-position 'consult--source-buffer consult-buffer-sources :test 'equal))
-           (tail (nthcdr idx consult-buffer-sources)))
+    (let* ((idx (cl-position 'consult--source-buffer
+                  consult-buffer-sources :test 'equal))
+            (tail (nthcdr idx consult-buffer-sources)))
       (setcdr
-       (nthcdr (1- idx) consult-buffer-sources)
-       (append (list 'org-roam-buffer-source) tail)))
+        (nthcdr (1- idx) consult-buffer-sources)
+        (append (list 'org-roam-buffer-source) tail)))
     (add-to-list 'consult-buffer-sources 'org-roam-buffer-source 'append)))
 
-(eval-after-load
-;; Customize consult--source-buffer to show org-roam buffers only in
-;; their dedicated section
-(consult-customize
-  consult--source-buffer
-  :items (lambda ()
-           (consult--buffer-query
-             :sort 'visibility
-             :as #'buffer-name
-             :predicate (lambda (buf) (not (org-roam-buffer-p buf))))))
+(defun consult-org-roam-buffer-teardown ()
+  "Remove org-roam-buffer-source from consult-buffer-sources."
+  (setq consult-buffer-sources
+    (delete 'org-roam-buffer-source consult-buffer-sources))
+  (consult-org-roam-buffer--customize-source-buffer nil))
 
-  (consult-org-roam-buffer-setup))
+(defun consult-org-roam-buffer--customize-source-buffer (is-remove)
+  "Customize consult--source-buffer to show or hide depending on IS-REMOVE.
+Customize consult--source-buffer to either show or hide
+org-roam-buffers in regular consult-buffer section, which is
+controlled by IS-REMOVE.."
+  (if is-remove
+    (consult-customize
+      consult--source-buffer
+      :items (lambda ()
+               (consult--buffer-query
+                 :sort 'visibility
+                 :as #'buffer-name
+                 :predicate (lambda (buf) (not (org-roam-buffer-p buf))))))
+    (consult-customize
+      consult--source-buffer
+      :items (lambda ()
+               (consult--buffer-query
+                 :sort 'visibility
+                 :as #'buffer-name
+                 :predicate nil
+                 )))))
 
 (provide 'consult-org-roam-buffer)
 ;;; consult-org-roam-buffer.el ends here
