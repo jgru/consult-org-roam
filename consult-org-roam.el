@@ -54,21 +54,6 @@ With an option for INITIAL input when called non-interactively."
       (funcall consult-org-roam-grep-func org-roam-directory (format "%s" initial))
     (funcall consult-org-roam-grep-func org-roam-directory)))
 
-(defun consult-org-roam--select-file (&optional prompt list)
-  "Wrapper around `consult--read' to select an org-roam file.
-Offers candidates withing `org-roam-directory', or from LIST when
-supplied. Can take a PROMPT argument."
-  (let* ((files (if list list
-                  (org-roam-list-files)))
-         (prompt (if prompt prompt
-                 "Select File: ")))
-    (consult--read
-     files
-     :prompt prompt
-     :sort t
-     :require-match t
-     :state (consult--file-preview))))
-
 (defun consult-org-roam--ids-to-files (ids)
   "Take a bunch of IDS of org-roam-nodes and convert those into file paths."
   (mapcar (lambda (id)
@@ -132,11 +117,17 @@ If OTHER-WINDOW, visit the NODE in another window."
                                (user-error "No forward links found")))
     (consult-org-roam--open-or-capture other-window chosen-node-or-str)))
 
+(defun consult-org-roam--node-file-p (node)
+  "Take NODE and return t if level 0.
+This filters org-roam nodes to file nodes".
+  (= (org-roam-node-level node) 0))
+
 ;;;###autoload
-(defun consult-org-roam-file-find ()
-  "Find org-roam node with preview."
-  (interactive "")
-  (find-file (consult-org-roam--select-file "Node: ")))
+(defun consult-org-roam-file-find (arg)
+  "Find org-roam node with preview, if ARG open in other window."
+  (interactive "P")
+  (let ((other-window (if arg t nil)))
+    (org-roam-node-find other-window nil #'consult-org-roam--node-file-p)))
 
 ;; Completing-read interface using consult. Override
 ;; `org-roam-node-read' so that each an every completing function
