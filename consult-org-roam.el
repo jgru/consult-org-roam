@@ -119,7 +119,7 @@ If OTHER-WINDOW, visit the NODE in another window."
 
 (defun consult-org-roam--node-file-p (node)
   "Take NODE and return t if level 0.
-This filters org-roam nodes to file nodes".
+This filters org-roam nodes to file nodes."
   (= (org-roam-node-level node) 0))
 
 ;;;###autoload
