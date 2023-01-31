@@ -154,7 +154,7 @@ defaulting to \"Node: \""
            nodes
            :prompt prompt
            :initial initial-input
-           :sort sort-fn
+           :sort nil ;; cands are already sorted
            :require-match require-match
            :category 'org-roam-node
            ;;:history 'org-roam-node-history
