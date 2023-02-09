@@ -167,13 +167,19 @@ defaulting to \"Node: \""
     (if (org-roam-node-p node) (progn node)
       (progn (org-roam-node-create :title node)))))
 
+
 (defun consult-org-roam--node-preview ()
   "Create preview function for nodes."
   (let ((open (consult--temporary-files))
-        (preview (consult--buffer-preview)))
+        (preview (consult--buffer-preview))
+         (state  (window-state-get)))
     (lambda (action cand)
       (when (eq action 'exit)
-        (funcall open))
+        (progn
+          ;; Restore saved window state
+          ;; To move point to the original position
+          (window-state-put state)
+          (funcall open)))
       (if (org-roam-node-p cand)
           (funcall preview action
                    (and cand
