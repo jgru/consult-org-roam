@@ -21,7 +21,6 @@
 
 (require 'org-roam)
 (require 'consult)
-(require 'f)
 
 ;; ============================================================================
 ;;;; Customize definitions
@@ -139,9 +138,9 @@ title of an open org-roam buffer."
      :narrow   ,consult-org-roam-buffer-narrow-key
      :category org-roam-buffer
      :annotate ,(lambda (cand)
-                  (f-filename
+                  (file-name-nondirectory (directory-file-name
                     (buffer-name
-                      (consult-org-roam-buffer--with-title cand))))
+                      (consult-org-roam-buffer--with-title cand)))))
      :state    ,#'consult-org-roam-buffer--state
      :items    ,#'consult-org-roam-buffer--get-roam-bufs))
 
