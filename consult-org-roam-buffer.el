@@ -138,9 +138,9 @@ title of an open org-roam buffer."
      :narrow   ,consult-org-roam-buffer-narrow-key
      :category org-roam-buffer
      :annotate ,(lambda (cand)
-                  (file-name-nondirectory (directory-file-name
+                  (file-name-nondirectory
                     (buffer-name
-                      (consult-org-roam-buffer--with-title cand)))))
+                      (consult-org-roam-buffer--with-title cand))))
      :state    ,#'consult-org-roam-buffer--state
      :items    ,#'consult-org-roam-buffer--get-roam-bufs))
 
