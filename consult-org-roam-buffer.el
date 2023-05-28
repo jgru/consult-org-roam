@@ -37,6 +37,11 @@
   :type 'key
   :group 'consult-org-roam-buffer)
 
+(defcustom consult-org-roam-buffer-enabled t
+  "Boolean to enable/disable consult-org-raom-buffer"
+  :type 'boolean
+  :group 'consult-org-roam-buffer)
+
 (defcustom consult-org-roam-buffer-after-buffers nil
   "If non-nil, display org-roam buffers right after non-org-roam buffers.
   Otherwise, display org-roam buffers after any other visible default
