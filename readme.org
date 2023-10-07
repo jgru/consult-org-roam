@@ -70,7 +70,7 @@ snippet might serve as a viable starting point:
    ;; Eventually suppress previewing for certain functions
    (consult-customize
     consult-org-roam-forward-links
-    :preview-key (kbd "M-."))
+    :preview-key "M-.")
    :bind
    ;; Define some convenient keybindings as an addition
    ("C-c n e" . consult-org-roam-file-find)
