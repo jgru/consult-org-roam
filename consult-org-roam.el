@@ -47,12 +47,17 @@
 
 ;;;###autoload
 (defun consult-org-roam-search (&optional initial)
-  "Search org-roam directory using `consult-ripgrep' with live-preview.
-With an option for INITIAL input when called non-interactively."
+  "Search org-roam directory using `consult-org-roam-grep-func' with live-preview.
+With an option for INITIAL input when called non-interactively.
+The function is restricted to files with .org-suffix."
   (interactive)
-  (if initial
-      (funcall consult-org-roam-grep-func org-roam-directory (format "%s" initial))
-    (funcall consult-org-roam-grep-func org-roam-directory)))
+  (let ((consult-ripgrep-args
+          (concat consult-ripgrep-args " --glob *.org"))
+         (consult-grep-args
+           (add-to-list 'consult-grep-args " --include *.org" t)))
+    (if initial
+        (funcall consult-org-roam-grep-func org-roam-directory (format "%s" initial))
+      (funcall consult-org-roam-grep-func org-roam-directory))))
 
 (defun consult-org-roam--ids-to-files (ids)
   "Take a bunch of IDS of org-roam-nodes and convert those into file paths."
