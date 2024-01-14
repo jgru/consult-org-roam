@@ -160,9 +160,9 @@ consult--source-buffer."
   (if consult-org-roam-buffer-after-buffers
     (let* ((idx (cl-position 'consult--source-buffer
                   consult-buffer-sources :test 'equal))
-            (tail (nthcdr idx consult-buffer-sources)))
+            (tail (nthcdr (1+ idx) consult-buffer-sources)))
       (setcdr
-        (nthcdr (1- idx) consult-buffer-sources)
+        (nthcdr idx consult-buffer-sources)
         (append (list 'org-roam-buffer-source) tail)))
     (add-to-list 'consult-buffer-sources 'org-roam-buffer-source 'append)))
 
