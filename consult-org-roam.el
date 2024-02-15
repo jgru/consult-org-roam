@@ -101,6 +101,84 @@ If OTHER-WINDOW, visit the NODE in another window."
     (consult-org-roam--open-or-capture other-window chosen-node-or-str)))
 
 ;;;###autoload
+(defun consult-org-roam-backlinks-recursive (&optional other-window)
+  "Select from list of all notes that link to the current note (recursively).
+Compared to `consult-org-roam-backlinks' (the nonrecursive variant) this also
+considers headline nodes without explicit links to their ancestor headline
+and/or file nodes.
+If OTHER-WINDOW, visit the NODE in another window."
+  (interactive current-prefix-arg)
+  (let* ((node (org-roam-node-at-point))
+         (ids (mapcar (lambda (el) (car el))(org-roam-db-query
+            [:with :recursive [
+                   ; Compute trees of headline nodes. org-roam does not store
+                   ; these natively.
+                   (as (funcall headlines node_id ancestor_id) [
+                        :select [node:id ancestor:id]
+                        :from (on (join (as nodes node)
+                                        (as nodes ancestor))
+                                  (and (= node:file ancestor:file)
+                                       (> node:level ancestor:level)
+                                       (or (= node:level 1)
+                                           (= ancestor:level 0)
+                                           (and (= ancestor:level 1)
+                                                (LIKE node:olp
+                                                      ; TODO escape meta chars in title
+                                                      (|| '"("
+                                                          ancestor:title
+                                                          '"%")))
+                                           (and (> ancestor:level 1)
+                                                (LIKE node:olp
+                                                      ; TODO escape meta chars in olp/title
+                                                      (|| '"("
+                                                          (funcall TRIM ancestor:olp '"()")
+                                                          '" "
+                                                          ancestor:title
+                                                          '"%"))))))
+                        :group-by node:id
+                        :having (= ancestor:level (funcall MAX ancestor:level))])
+                   (as (funcall links_tr id) [
+                        :values [$s1]
+                        :union
+                            :select source
+                            :from [links links_tr]
+                            :where (and (= type "id")
+                                        (= dest links_tr:id))
+                        :union
+                            :select source
+                            :from [(on (join links refs)
+                                        (and (= links:dest refs:ref)
+                                             (= links:type refs:type)))
+                                   links_tr]
+                            :where (= refs:node_id links_tr:id)
+                        :union
+                            :select citations:node_id
+                            :from [(on (join citations refs)
+                                       (and (= citations:cite_key refs:ref)
+                                            (= refs:type "cite")))
+                                   links_tr]
+                            :where (= refs:node_id links_tr:id)
+                        :union
+                            :select headlines:node_id
+                            :from [headlines, links_tr]
+                            :where (= headlines:ancestor_id links_tr:id)])]
+                   :select id
+                   :from links_tr
+                   :where (<> id $s1)]
+            (if node
+                (org-roam-node-id (org-roam-node-at-point))
+              (user-error "Buffer does not contain org-roam-nodes")))))
+          (chosen-node-or-str (if ids
+                                (consult-org-roam-node-read ""
+                                  (lambda (n)
+                                    (if (org-roam-node-p n)
+                                      (if (member (org-roam-node-id n) ids)
+                                        t
+                                        nil))))
+                                (user-error "No backlinks found"))))
+    (consult-org-roam--open-or-capture other-window chosen-node-or-str)))
+
+;;;###autoload
 (defun consult-org-roam-forward-links (&optional other-window)
   "Select a forward link contained in the current buffer.
 If OTHER-WINDOW, visit the NODE in another window."
