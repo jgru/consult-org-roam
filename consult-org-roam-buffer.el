@@ -48,6 +48,14 @@
   source")
 
 ;; ============================================================================
+;;;; Variable definitions
+;; ============================================================================
+
+(defvar consult-org-roam---open-buffer-list nil
+  "Alist mapping displayed org-roam buffer titles to their buffers.
+The list is refreshed when the org-roam buffer source is queried.")
+
+;; ============================================================================
 ;;;; Functions
 ;; ============================================================================
 
@@ -118,12 +126,12 @@ with 'CAPTURE-') out of this list."
   "Generate an alist of the form `(TITLE . BUF) from BUFFER-LIST’.
 Generate an alist of the form `(TITLE . BUF)’ where TITLE is the
 title of an open org-roam buffer."
-  (setq org-roam-buffer-open-buffer-list
+  (setq consult-org-roam---open-buffer-list
     (mapcar #'consult-org-roam-buffer--add-title buffer-list)))
 
 (defun consult-org-roam-buffer--with-title (title)
   "Find buffer name with TITLE from among the list of open org-roam buffers."
-  (cdr (assoc title org-roam-buffer-open-buffer-list)))
+  (cdr (assoc title consult-org-roam---open-buffer-list)))
 
 (defun consult-org-roam-buffer--get-roam-bufs ()
   "Return list of currently open org-roam buffers."
