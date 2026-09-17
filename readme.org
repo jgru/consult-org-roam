@@ -57,10 +57,6 @@ snippet might serve as a viable starting point:
 (use-package consult-org-roam
    :ensure t
    :after org-roam
-   :init
-   (require 'consult-org-roam)
-   ;; Activate the minor mode
-   (consult-org-roam-mode 1)
    :custom
    ;; Use `ripgrep' for searching with `consult-org-roam-search'
    (consult-org-roam-grep-func #'consult-ripgrep)
@@ -74,6 +70,8 @@ snippet might serve as a viable starting point:
    (consult-customize
     consult-org-roam-forward-links
     :preview-key "M-.")
+   ;; Activate the minor mode
+   (consult-org-roam-mode 1)
    :bind
    ;; Define some convenient keybindings as an addition
    ("C-c n e" . consult-org-roam-file-find)
